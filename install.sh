@@ -48,7 +48,11 @@ cp "$REPO_DIR/user/.config/konsole/Claude AI.profile" "$USER_HOME/.local/share/k
 mkdir -p "$USER_HOME/.local/share/color-schemes"
 cp "$REPO_DIR/user/.local/share/color-schemes/"* "$USER_HOME/.local/share/color-schemes/"
 mkdir -p "$USER_HOME/.local/share/plasma/desktoptheme/custom/widgets"
-cp -r "$REPO_DIR/user/.config/plasma/desktoptheme/custom/"* "$USER_HOME/.local/share/plasma/desktoptheme/custom/"
+cp -r "$REPO_DIR/user/.local/share/plasma/desktoptheme/custom/"* "$USER_HOME/.local/share/plasma/desktoptheme/custom/"
+mkdir -p "$USER_HOME/.local/share/icons"
+cp "$REPO_DIR/user/.local/share/icons/"* "$USER_HOME/.local/share/icons/"
+mkdir -p "$USER_HOME/.local/share/plasma/plasmoids"
+cp -r "$REPO_DIR/user/.local/share/plasma/plasmoids/"* "$USER_HOME/.local/share/plasma/plasmoids/"
 cp "$REPO_DIR/user/home/.zshrc" "$USER_HOME/.zshrc"
 cp "$REPO_DIR/user/home/.p10k.zsh" "$USER_HOME/.p10k.zsh"
 chsh -s /usr/bin/zsh "$USERNAME"
@@ -56,6 +60,7 @@ chsh -s /usr/bin/zsh "$USERNAME"
 echo "=== Setting up services ==="
 sudo systemctl daemon-reload
 sudo systemctl enable --now hotkey-handler
+sudo systemctl enable hotkey-handler-resume
 sudo systemctl enable --now powertop
 
 echo "=== Setting up GRUB font ==="

@@ -13,7 +13,7 @@ Post-install configuration for ASUS Zenbook S14 UX5406SA running Arch Linux with
 ## What this does
 
 - Hotkey handler service: mic mute LED, camera toggle, Copilot key (F23) launches ai-assistant Code in Konsole
-- SDDM greeter: wallpaper, cursor, scaling sync via `sync-greeter` command
+- SDDM greeter: wallpaper, cursor and display scaling sync via `sync-greeter` command
 - System locale: English UI, Turkish date/time/currency formats, Turkish keyboard
 - GRUB: MesloLGS NF font at 36px for HiDPI display
 - Console font: Terminus 32px
@@ -32,4 +32,4 @@ cd zenbookS14Arch
 
 ## After install
 
-Run `sync-greeter` to copy your current wallpaper and cursor settings to the SDDM greeter.
+Run `sync-greeter` to copy your current wallpaper, cursor and display scaling settings to the SDDM greeter.

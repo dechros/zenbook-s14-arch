@@ -23,7 +23,7 @@ if ! command -v yay &>/dev/null; then
     rm -rf "$tmp"
 fi
 
-yay -S --needed --noconfirm google-chrome papirus-folders-git \
+yay -S --needed --noconfirm google-chrome \
     ttf-meslo-nerd-font-powerlevel10k zsh-theme-powerlevel10k
 
 echo "=== Copying system files ==="
@@ -59,8 +59,6 @@ sudo grub-mkfont -s 36 /usr/share/fonts/TTF/MesloLGS-NF-Regular.ttf \
     -o /boot/grub/fonts/MesloLGS36.pf2
 sudo grub-mkconfig -o /boot/grub/grub.cfg
 
-echo "=== Setting up icons ==="
-papirus-folders -C teal --theme Papirus-Dark
 
 echo "=== Setting locale ==="
 sudo locale-gen

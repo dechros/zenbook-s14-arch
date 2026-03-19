@@ -23,7 +23,7 @@ if ! command -v yay &>/dev/null; then
     rm -rf "$tmp"
 fi
 
-yay -S --needed --noconfirm brave-bin papirus-folders-git
+yay -S --needed --noconfirm google-chrome papirus-folders-git
 
 echo "=== Copying system files ==="
 sudo cp -r "$REPO_DIR/system/etc/"* /etc/

@@ -11,3 +11,5 @@ alsa-ucm-conf
 # AUR (yay)
 google-chrome
 papirus-folders-git
+ttf-meslo-nerd-font-powerlevel10k
+zsh-theme-powerlevel10k

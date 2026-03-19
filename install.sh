@@ -23,7 +23,8 @@ if ! command -v yay &>/dev/null; then
     rm -rf "$tmp"
 fi
 
-yay -S --needed --noconfirm google-chrome papirus-folders-git
+yay -S --needed --noconfirm google-chrome papirus-folders-git \
+    ttf-meslo-nerd-font-powerlevel10k zsh-theme-powerlevel10k
 
 echo "=== Copying system files ==="
 sudo cp -r "$REPO_DIR/system/etc/"* /etc/
@@ -35,10 +36,18 @@ sudo chmod +x /usr/local/bin/sync-greeter
 sudo chmod 440 /etc/sudoers.d/sync-greeter
 sudo chown root:root /etc/sudoers.d/sync-greeter
 
+echo "=== Installing oh-my-zsh ==="
+if [[ ! -d "$USER_HOME/.oh-my-zsh" ]]; then
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+fi
+
 echo "=== Copying user config files ==="
 cp -r "$REPO_DIR/user/.config/"* "$USER_HOME/.config/"
 mkdir -p "$USER_HOME/.local/share/konsole"
 cp "$REPO_DIR/user/.config/konsole/Claude AI.profile" "$USER_HOME/.local/share/konsole/"
+cp "$REPO_DIR/user/home/.zshrc" "$USER_HOME/.zshrc"
+cp "$REPO_DIR/user/home/.p10k.zsh" "$USER_HOME/.p10k.zsh"
+chsh -s /usr/bin/zsh "$USERNAME"
 
 echo "=== Setting up services ==="
 sudo systemctl daemon-reload

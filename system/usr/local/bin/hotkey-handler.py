@@ -131,9 +131,9 @@ def main():
         config={GPIO_CLED: gpiod.LineSettings(direction=Direction.OUTPUT)}
     )
 
-    mled.set_value(GPIO_MLED, Value.INACTIVE)
+    mled.set_value(GPIO_MLED, Value.ACTIVE)
     cled.set_value(GPIO_CLED, Value.ACTIVE if camera_enabled else Value.INACTIVE)
-    write_file(MICMUTE_LED_SYSFS, 0)
+    write_file(MICMUTE_LED_SYSFS, 1)
 
     dev_wmi = find_device('Asus WMI hotkeys')
     dev_kbd = find_device('AT Translated Set 2 keyboard')
@@ -151,8 +151,8 @@ def main():
 
                 if event.code == evdev.ecodes.KEY_MICMUTE:
                     mic_muted = not mic_muted
-                    mled.set_value(GPIO_MLED, Value.ACTIVE if mic_muted else Value.INACTIVE)
-                    write_file(MICMUTE_LED_SYSFS, 1 if mic_muted else 0)
+                    mled.set_value(GPIO_MLED, Value.INACTIVE if mic_muted else Value.ACTIVE)
+                    write_file(MICMUTE_LED_SYSFS, 0 if mic_muted else 1)
 
                 elif event.code == evdev.ecodes.KEY_CAMERA:
                     if camera_enabled:

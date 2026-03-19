@@ -1,0 +1,11 @@
+[Unit]
+Description=Hotkey Handler (Camera + Mic LED)
+After=multi-user.target
+
+[Service]
+ExecStart=/usr/local/bin/hotkey-handler.py
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

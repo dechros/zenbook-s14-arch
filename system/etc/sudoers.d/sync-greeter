@@ -1,0 +1,1 @@
+dechros ALL=(ALL) NOPASSWD: /usr/local/bin/sync-greeter

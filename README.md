@@ -19,7 +19,7 @@ Post-install configuration for ASUS Zenbook S14 UX5406SA running Arch Linux with
 - Console font: Terminus 32px
 - Power: powertop auto-tune, WiFi power save disabled
 - Browser: Google Chrome
-- Icons: Papirus teal
+- Icons: Breeze Dark
 - Shell: ZSH + oh-my-zsh + Powerlevel10k
 
 ## Install

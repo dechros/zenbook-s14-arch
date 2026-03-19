@@ -18,7 +18,7 @@ Post-install configuration for ASUS Zenbook S14 UX5406SA running Arch Linux with
 - GRUB: MesloLGS NF font at 36px for HiDPI display
 - Console font: Terminus 32px
 - Power: powertop auto-tune, WiFi power save disabled
-- Browser: Brave
+- Browser: Google Chrome
 - Icons: Papirus teal
 
 ## Install

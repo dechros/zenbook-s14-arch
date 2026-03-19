@@ -9,5 +9,5 @@ sof-firmware
 alsa-ucm-conf
 
 # AUR (yay)
-brave-bin
+google-chrome
 papirus-folders-git

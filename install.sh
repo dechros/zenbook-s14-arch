@@ -67,6 +67,11 @@ mkdir -p "$USER_HOME/.local/share/icons"
 cp "$REPO_DIR/user/.local/share/icons/"* "$USER_HOME/.local/share/icons/"
 mkdir -p "$USER_HOME/.local/share/plasma/plasmoids"
 cp -r "$REPO_DIR/user/.local/share/plasma/plasmoids/"* "$USER_HOME/.local/share/plasma/plasmoids/"
+
+echo "=== Installing Plasma Launcher ==="
+git clone --depth=1 https://github.com/dechros/plasmaLauncher.git "$USER_HOME/plasmaLauncher"
+ln -sf "$USER_HOME/plasmaLauncher" "$USER_HOME/.local/share/plasma/plasmoids/dechros.plasmaLauncher"
+
 cp "$REPO_DIR/user/home/.zshrc" "$USER_HOME/.zshrc"
 cp "$REPO_DIR/user/home/.p10k.zsh" "$USER_HOME/.p10k.zsh"
 chsh -s /usr/bin/zsh "$USERNAME"

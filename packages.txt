@@ -1,0 +1,13 @@
+# pacman
+python-evdev
+python-gpiod
+papirus-icon-theme
+terminus-font
+powertop
+iw
+sof-firmware
+alsa-ucm-conf
+
+# AUR (yay)
+brave-bin
+papirus-folders-git

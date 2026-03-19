@@ -13,6 +13,7 @@ CAMERA_BIND       = '/sys/bus/usb/drivers/usb/bind'
 CAMERA_UNBIND     = '/sys/bus/usb/drivers/usb/unbind'
 CAMERA_USB        = '3-5'
 CAMERA_STATE      = '/var/lib/hotkey-handler/camera_enabled'
+MIC_STATE         = '/var/lib/hotkey-handler/mic_muted'
 GPIO_CHIP         = '/dev/gpiochip2'
 GPIO_MLED         = 30
 GPIO_CLED         = 31
@@ -39,6 +40,18 @@ def save_state(enabled):
     os.makedirs(os.path.dirname(CAMERA_STATE), exist_ok=True)
     with open(CAMERA_STATE, 'w') as f:
         f.write('1' if enabled else '0')
+
+def read_mic_state():
+    try:
+        with open(MIC_STATE) as f:
+            return f.read().strip() == '1'
+    except:
+        return False
+
+def save_mic_state(muted):
+    os.makedirs(os.path.dirname(MIC_STATE), exist_ok=True)
+    with open(MIC_STATE, 'w') as f:
+        f.write('1' if muted else '0')
 
 def user_logged_in():
     try:
@@ -117,7 +130,7 @@ def kde_osd(icon, text):
 def main():
     write_file(MICMUTE_TRIGGER, 'none')
 
-    mic_muted = False
+    mic_muted = read_mic_state()
     camera_enabled = read_state()
 
     mled = gpiod.request_lines(
@@ -131,9 +144,9 @@ def main():
         config={GPIO_CLED: gpiod.LineSettings(direction=Direction.OUTPUT)}
     )
 
-    mled.set_value(GPIO_MLED, Value.ACTIVE)
+    mled.set_value(GPIO_MLED, Value.ACTIVE if mic_muted else Value.INACTIVE)
     cled.set_value(GPIO_CLED, Value.ACTIVE if camera_enabled else Value.INACTIVE)
-    write_file(MICMUTE_LED_SYSFS, 1)
+    write_file(MICMUTE_LED_SYSFS, 1 if mic_muted else 0)
 
     dev_wmi = find_device('Asus WMI hotkeys')
     dev_kbd = find_device('AT Translated Set 2 keyboard')
@@ -151,8 +164,9 @@ def main():
 
                 if event.code == evdev.ecodes.KEY_MICMUTE:
                     mic_muted = not mic_muted
-                    mled.set_value(GPIO_MLED, Value.INACTIVE if mic_muted else Value.ACTIVE)
-                    write_file(MICMUTE_LED_SYSFS, 0 if mic_muted else 1)
+                    mled.set_value(GPIO_MLED, Value.ACTIVE if mic_muted else Value.INACTIVE)
+                    write_file(MICMUTE_LED_SYSFS, 1 if mic_muted else 0)
+                    save_mic_state(mic_muted)
 
                 elif event.code == evdev.ecodes.KEY_CAMERA:
                     if camera_enabled:

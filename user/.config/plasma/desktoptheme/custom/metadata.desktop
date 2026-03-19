@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Custom
+Comment=Breeze with matching panel color
+X-KDE-PluginInfo-Name=custom
+
+[ContentsDeserialize]
+FallbackTheme=default

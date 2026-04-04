@@ -46,9 +46,6 @@ sudo cp -r "$REPO_DIR/system/usr/"* /usr/
 sudo chmod +x /usr/local/bin/hotkey-handler.py
 sudo chmod +x /usr/local/bin/launch-claude.sh
 sudo chmod +x /usr/local/bin/toggle-claude.sh
-sudo chmod +x /usr/local/bin/sync-greeter
-sudo chmod 440 /etc/sudoers.d/sync-greeter
-sudo chown root:root /etc/sudoers.d/sync-greeter
 
 echo "=== Installing oh-my-zsh ==="
 if [[ ! -d "$USER_HOME/.oh-my-zsh" ]]; then
@@ -57,20 +54,8 @@ fi
 
 echo "=== Copying user config files ==="
 cp -r "$REPO_DIR/user/.config/"* "$USER_HOME/.config/"
-mkdir -p "$USER_HOME/.local/share/konsole"
-cp "$REPO_DIR/user/.config/konsole/Claude AI.profile" "$USER_HOME/.local/share/konsole/"
-mkdir -p "$USER_HOME/.local/share/color-schemes"
-cp "$REPO_DIR/user/.local/share/color-schemes/"* "$USER_HOME/.local/share/color-schemes/"
-mkdir -p "$USER_HOME/.local/share/plasma/desktoptheme/custom/widgets"
-cp -r "$REPO_DIR/user/.local/share/plasma/desktoptheme/custom/"* "$USER_HOME/.local/share/plasma/desktoptheme/custom/"
 mkdir -p "$USER_HOME/.local/share/icons"
 cp "$REPO_DIR/user/.local/share/icons/"* "$USER_HOME/.local/share/icons/"
-mkdir -p "$USER_HOME/.local/share/plasma/plasmoids"
-cp -r "$REPO_DIR/user/.local/share/plasma/plasmoids/"* "$USER_HOME/.local/share/plasma/plasmoids/"
-
-echo "=== Installing Plasma Launcher ==="
-git clone --depth=1 https://github.com/dechros/plasmaLauncher.git "$USER_HOME/plasmaLauncher"
-ln -sf "$USER_HOME/plasmaLauncher" "$USER_HOME/.local/share/plasma/plasmoids/dechros.plasmaLauncher"
 
 cp "$REPO_DIR/user/home/.zshrc" "$USER_HOME/.zshrc"
 cp "$REPO_DIR/user/home/.p10k.zsh" "$USER_HOME/.p10k.zsh"
@@ -86,7 +71,6 @@ echo "=== Setting up GRUB font ==="
 sudo grub-mkfont -s 36 /usr/share/fonts/TTF/MesloLGS-NF-Regular.ttf \
     -o /boot/grub/fonts/MesloLGS36.pf2
 sudo grub-mkconfig -o /boot/grub/grub.cfg
-
 
 echo "=== Setting locale ==="
 sudo locale-gen

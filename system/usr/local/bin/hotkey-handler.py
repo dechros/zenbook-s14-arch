@@ -117,9 +117,12 @@ def toggle_claude():
     else:
         run_as_user(['/usr/local/bin/launch-claude.sh'])
 
-def notify(icon, text):
-    run_as_user(['notify-send', '--hint=string:x-canonical-private-synchronous:hotkey',
-                 '-i', icon, '-t', '2000', text])
+def show_osd(icon):
+    run_as_user(['gdbus', 'call', '--session',
+                 '--dest', 'org.gnome.Shell',
+                 '--object-path', '/org/gnome/Shell/Osd',
+                 '--method', 'org.gnome.Shell.Osd.ShowOsdWithIcon',
+                 icon])
 
 def main():
     write_file(MICMUTE_TRIGGER, 'none')
@@ -167,12 +170,12 @@ def main():
                         write_file(CAMERA_UNBIND, CAMERA_USB)
                         camera_enabled = False
                         cled.set_value(GPIO_CLED, Value.INACTIVE)
-                        notify('camera-off', 'Camera Off')
+                        show_osd('camera-disabled-symbolic')
                     else:
                         write_file(CAMERA_BIND, CAMERA_USB)
                         camera_enabled = True
                         cled.set_value(GPIO_CLED, Value.ACTIVE)
-                        notify('camera-on', 'Camera On')
+                        show_osd('camera-web-symbolic')
                     save_state(camera_enabled)
 
                 elif event.code == evdev.ecodes.KEY_F23:

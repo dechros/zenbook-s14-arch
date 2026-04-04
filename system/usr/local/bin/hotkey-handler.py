@@ -119,9 +119,9 @@ def toggle_claude():
 
 def show_osd(icon):
     run_as_user(['gdbus', 'call', '--session',
-                 '--dest', 'org.gnome.Shell',
-                 '--object-path', '/org/gnome/Shell/Osd',
-                 '--method', 'org.gnome.Shell.Osd.ShowOsdWithIcon',
+                 '--dest', 'com.dechros.CameraOsd',
+                 '--object-path', '/com/dechros/CameraOsd',
+                 '--method', 'com.dechros.CameraOsd.Show',
                  icon])
 
 def main():

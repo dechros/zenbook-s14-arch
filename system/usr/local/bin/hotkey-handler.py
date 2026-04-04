@@ -118,7 +118,8 @@ def toggle_claude():
         run_as_user(['/usr/local/bin/launch-claude.sh'])
 
 def notify(icon, text):
-    run_as_user(['notify-send', '-i', icon, text])
+    run_as_user(['notify-send', '--hint=string:x-canonical-private-synchronous:hotkey',
+                 '-i', icon, '-t', '2000', text])
 
 def main():
     write_file(MICMUTE_TRIGGER, 'none')

@@ -50,8 +50,8 @@ git clone --depth=1 https://github.com/dechros/hotkey-handler.git "$USER_HOME/de
 echo "=== Installing GNOME extensions ==="
 mkdir -p "$USER_HOME/.local/share/gnome-shell/extensions"
 
-git clone --depth=1 https://github.com/dechros/camera-osd-gnome.git "$USER_HOME/dev/camera-osd-gnome"
-ln -sf "$USER_HOME/dev/camera-osd-gnome" "$USER_HOME/.local/share/gnome-shell/extensions/camera-osd@dechros"
+git clone --depth=1 https://github.com/dechros/gnome-shell-helper.git "$USER_HOME/dev/gnome-shell-helper"
+ln -sf "$USER_HOME/dev/gnome-shell-helper" "$USER_HOME/.local/share/gnome-shell/extensions/camera-osd@dechros"
 
 yay -S --needed --noconfirm gnome-shell-extension-dash-to-dock
 

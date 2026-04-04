@@ -1,4 +1,4 @@
-# zenbookS14Arch
+# zenbook-s14-arch
 
 Post-install configuration for ASUS Zenbook S14 UX5406SA running Arch Linux with GNOME.
 
@@ -32,7 +32,7 @@ Installs firmware files from [dantmnf/zenbook-s14-linux](https://github.com/dant
 ## Install
 
 ```bash
-git clone https://github.com/dechros/zenbookS14Arch.git
-cd zenbookS14Arch
+git clone https://github.com/dechros/zenbook-s14-arch.git
+cd zenbook-s14-arch
 ./install.sh
 ```

@@ -54,10 +54,12 @@ git clone --depth=1 https://github.com/dechros/gnome-shell-helper.git "$USER_HOM
 ln -sf "$USER_HOME/dev/gnome-shell-helper" "$USER_HOME/.local/share/gnome-shell/extensions/camera-osd@dechros"
 
 yay -S --needed --noconfirm gnome-shell-extension-dash-to-dock
+sudo pacman -S --needed --noconfirm gnome-shell-extension-appindicator
+pip install --user gnome-extensions-cli
+gext install window-title-is-back@fthx
 
 gsettings set org.gnome.shell disable-extension-version-validation true
-gnome-extensions enable camera-osd@dechros || true
-gnome-extensions enable dash-to-dock@micxgx.gmail.com || true
+gsettings set org.gnome.shell enabled-extensions "['dash-to-dock@micxgx.gmail.com', 'window-title-is-back@fthx', 'camera-osd@dechros', 'appindicatorsupport@rgcjonas.gmail.com']"
 
 echo "=== Installing oh-my-zsh ==="
 if [[ ! -d "$USER_HOME/.oh-my-zsh" ]]; then

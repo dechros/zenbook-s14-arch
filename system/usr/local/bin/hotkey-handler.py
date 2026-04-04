@@ -91,9 +91,6 @@ def run_as_user(cmd):
                     'WAYLAND_DISPLAY': wayland_display,
                     'XDG_SESSION_TYPE': 'wayland',
                     'QT_QPA_PLATFORM': 'wayland',
-                    'QT_QPA_PLATFORMTHEME': 'kde',
-                    'KDE_FULL_SESSION': 'true',
-                    'KDE_SESSION_VERSION': '6',
                     'LANG': 'en_US.UTF-8',
                     'LANGUAGE': 'en_US:en',
                     'LC_ALL': 'en_US.UTF-8',
@@ -120,12 +117,8 @@ def toggle_claude():
     else:
         run_as_user(['/usr/local/bin/launch-claude.sh'])
 
-def kde_osd(icon, text):
-    run_as_user(['gdbus', 'call', '--session',
-                 '--dest', 'org.kde.plasmashell',
-                 '--object-path', '/org/kde/osdService',
-                 '--method', 'org.kde.osdService.showText',
-                 icon, text])
+def notify(icon, text):
+    run_as_user(['notify-send', '-i', icon, text])
 
 def main():
     write_file(MICMUTE_TRIGGER, 'none')
@@ -173,12 +166,12 @@ def main():
                         write_file(CAMERA_UNBIND, CAMERA_USB)
                         camera_enabled = False
                         cled.set_value(GPIO_CLED, Value.INACTIVE)
-                        kde_osd('camera-off', 'Camera Off')
+                        notify('camera-off', 'Camera Off')
                     else:
                         write_file(CAMERA_BIND, CAMERA_USB)
                         camera_enabled = True
                         cled.set_value(GPIO_CLED, Value.ACTIVE)
-                        kde_osd('camera-on', 'Camera On')
+                        notify('camera-on', 'Camera On')
                     save_state(camera_enabled)
 
                 elif event.code == evdev.ecodes.KEY_F23:

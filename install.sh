@@ -47,10 +47,17 @@ echo "=== Installing hotkey handler ==="
 git clone --depth=1 https://github.com/dechros/hotkey-handler.git "$USER_HOME/dev/hotkey-handler"
 "$USER_HOME/dev/hotkey-handler/install.sh"
 
-echo "=== Installing Camera OSD extension ==="
-git clone --depth=1 https://github.com/dechros/camera-osd-gnome.git "$USER_HOME/dev/camera-osd-gnome"
+echo "=== Installing GNOME extensions ==="
 mkdir -p "$USER_HOME/.local/share/gnome-shell/extensions"
+
+git clone --depth=1 https://github.com/dechros/camera-osd-gnome.git "$USER_HOME/dev/camera-osd-gnome"
 ln -sf "$USER_HOME/dev/camera-osd-gnome" "$USER_HOME/.local/share/gnome-shell/extensions/camera-osd@dechros"
+
+yay -S --needed --noconfirm gnome-shell-extension-dash-to-dock
+
+gsettings set org.gnome.shell disable-extension-version-validation true
+gnome-extensions enable camera-osd@dechros || true
+gnome-extensions enable dash-to-dock@micxgx.gmail.com || true
 
 echo "=== Installing oh-my-zsh ==="
 if [[ ! -d "$USER_HOME/.oh-my-zsh" ]]; then

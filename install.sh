@@ -42,10 +42,15 @@ yay -S --needed --noconfirm google-chrome \
 
 echo "=== Copying system files ==="
 sudo cp -r "$REPO_DIR/system/etc/"* /etc/
-sudo cp -r "$REPO_DIR/system/usr/"* /usr/
-sudo chmod +x /usr/local/bin/hotkey-handler.py
-sudo chmod +x /usr/local/bin/launch-claude.sh
-sudo chmod +x /usr/local/bin/toggle-claude.sh
+
+echo "=== Installing hotkey handler ==="
+git clone --depth=1 https://github.com/dechros/hotkey-handler.git "$USER_HOME/dev/hotkey-handler"
+"$USER_HOME/dev/hotkey-handler/install.sh"
+
+echo "=== Installing Camera OSD extension ==="
+git clone --depth=1 https://github.com/dechros/camera-osd-gnome.git "$USER_HOME/dev/camera-osd-gnome"
+mkdir -p "$USER_HOME/.local/share/gnome-shell/extensions"
+ln -sf "$USER_HOME/dev/camera-osd-gnome" "$USER_HOME/.local/share/gnome-shell/extensions/camera-osd@dechros"
 
 echo "=== Installing oh-my-zsh ==="
 if [[ ! -d "$USER_HOME/.oh-my-zsh" ]]; then
@@ -57,19 +62,12 @@ cp -r "$REPO_DIR/user/.config/"* "$USER_HOME/.config/"
 mkdir -p "$USER_HOME/.local/share/icons"
 cp "$REPO_DIR/user/.local/share/icons/"* "$USER_HOME/.local/share/icons/"
 
-echo "=== Installing Camera OSD extension ==="
-git clone --depth=1 https://github.com/dechros/camera-osd-gnome.git "$USER_HOME/dev/camera-osd-gnome"
-mkdir -p "$USER_HOME/.local/share/gnome-shell/extensions"
-ln -sf "$USER_HOME/dev/camera-osd-gnome" "$USER_HOME/.local/share/gnome-shell/extensions/camera-osd@dechros"
-
 cp "$REPO_DIR/user/home/.zshrc" "$USER_HOME/.zshrc"
 cp "$REPO_DIR/user/home/.p10k.zsh" "$USER_HOME/.p10k.zsh"
 chsh -s /usr/bin/zsh "$USERNAME"
 
 echo "=== Setting up services ==="
 sudo systemctl daemon-reload
-sudo systemctl enable --now hotkey-handler
-sudo systemctl enable hotkey-handler-resume
 sudo systemctl enable --now powertop
 
 echo "=== Setting up GRUB font ==="

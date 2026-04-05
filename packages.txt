@@ -6,8 +6,10 @@ powertop
 iw
 sof-firmware
 alsa-ucm-conf
+gnome-backgrounds
 
 # AUR (yay)
 google-chrome
+bibata-cursor-theme-bin
 ttf-meslo-nerd-font-powerlevel10k
 zsh-theme-powerlevel10k

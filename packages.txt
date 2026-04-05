@@ -10,6 +10,7 @@ gnome-backgrounds
 gnome-characters
 qt5-wayland
 qt6-wayland
+inotify-tools
 vulkan-intel
 lib32-vulkan-intel
 vulkan-tools

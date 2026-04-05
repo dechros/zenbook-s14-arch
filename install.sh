@@ -25,7 +25,7 @@ echo "=== Installing packages ==="
 sudo pacman -S --needed --noconfirm \
     python-evdev libgpiod papirus-icon-theme gnome-backgrounds gnome-characters \
     terminus-font powertop iw sof-firmware alsa-ucm-conf github-cli \
-    qt5-wayland qt6-wayland \
+    qt5-wayland qt6-wayland inotify-tools \
     vulkan-intel lib32-vulkan-intel vulkan-tools
 
 if ! command -v yay &>/dev/null; then
@@ -45,6 +45,8 @@ sudo chmod 440 /etc/sudoers.d/gdm-wallpaper-sync
 sudo install -m 755 "$REPO_DIR/system/usr/local/bin/kbd-backlight-auto.sh" /usr/local/bin/kbd-backlight-auto.sh
 sudo install -m 755 "$REPO_DIR/system/usr/local/bin/gdm-wallpaper-update" /usr/local/bin/gdm-wallpaper-update
 sudo install -m 755 "$REPO_DIR/system/usr/local/bin/gdm-wallpaper-sync.sh" /usr/local/bin/gdm-wallpaper-sync.sh
+sudo install -d -m 755 /etc/dconf/profile
+sudo install -m 644 "$REPO_DIR/system/etc/dconf/profile/gdm" /etc/dconf/profile/gdm
 
 echo "=== Installing hotkey handler ==="
 if [[ ! -d "$USER_HOME/dev/hotkey-handler" ]]; then

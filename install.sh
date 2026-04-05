@@ -61,14 +61,14 @@ mkdir -p "$USER_HOME/.local/share/gnome-shell/extensions"
 if [[ ! -d "$USER_HOME/dev/gnome-shell-helper" ]]; then
     git clone --depth=1 https://github.com/dechros/gnome-shell-helper.git "$USER_HOME/dev/gnome-shell-helper"
 fi
-ln -sf "$USER_HOME/dev/gnome-shell-helper" "$USER_HOME/.local/share/gnome-shell/extensions/camera-osd@dechros"
+ln -sf "$USER_HOME/dev/gnome-shell-helper" "$USER_HOME/.local/share/gnome-shell/extensions/shell-helper@dechros"
 
 yay -S --needed --noconfirm gnome-shell-extension-dash-to-dock gnome-extensions-cli
 sudo pacman -S --needed --noconfirm gnome-shell-extension-appindicator
 gext install window-title-is-back@fthx
 
 gsettings set org.gnome.shell disable-extension-version-validation true
-gsettings set org.gnome.shell enabled-extensions "['dash-to-dock@micxgx.gmail.com', 'window-title-is-back@fthx', 'camera-osd@dechros', 'appindicatorsupport@rgcjonas.gmail.com']"
+gsettings set org.gnome.shell enabled-extensions "['dash-to-dock@micxgx.gmail.com', 'window-title-is-back@fthx', 'shell-helper@dechros', 'appindicatorsupport@rgcjonas.gmail.com']"
 
 echo "=== Setting GNOME appearance ==="
 gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'

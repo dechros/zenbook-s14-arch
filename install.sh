@@ -79,10 +79,13 @@ echo "=== Setting up services ==="
 sudo systemctl daemon-reload
 sudo systemctl enable --now powertop
 
-echo "=== Setting up GRUB font ==="
-sudo grub-mkfont -s 36 /usr/share/fonts/TTF/MesloLGS-NF-Regular.ttf \
-    -o /boot/grub/fonts/MesloLGS36.pf2
-sudo grub-mkconfig -o /boot/grub/grub.cfg
+echo "=== Configuring systemd-boot ==="
+sudo mkdir -p /boot/loader
+if [[ -f /boot/loader/loader.conf ]] && grep -q '^console-mode' /boot/loader/loader.conf; then
+    sudo sed -i 's/^console-mode.*/console-mode max/' /boot/loader/loader.conf
+else
+    echo 'console-mode max' | sudo tee -a /boot/loader/loader.conf
+fi
 
 echo "=== Setting locale ==="
 sudo locale-gen

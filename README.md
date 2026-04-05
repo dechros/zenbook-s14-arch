@@ -15,7 +15,7 @@ Post-install configuration for ASUS Zenbook S14 UX5406SA running Arch Linux with
 - Hotkey handler service: mic mute LED, camera toggle, Copilot key (F23) launches Claude Code
 - Hotkey resume service: restores GPIO LED state after suspend/wake
 - System locale: English UI, Turkish date/time/currency formats, Turkish keyboard
-- GRUB: MesloLGS NF font at 36px for HiDPI display
+- systemd-boot: `console-mode max` for HiDPI display
 - Console font: Terminus 32px
 - Power: powertop auto-tune, WiFi power save disabled
 - Browser: Google Chrome

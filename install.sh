@@ -23,7 +23,7 @@ rm -rf "$DRIVER_TMP"
 
 echo "=== Installing packages ==="
 sudo pacman -S --needed --noconfirm \
-    python-evdev libgpiod papirus-icon-theme gnome-backgrounds \
+    python-evdev libgpiod papirus-icon-theme gnome-backgrounds gnome-characters \
     terminus-font powertop iw sof-firmware alsa-ucm-conf github-cli
 
 if ! command -v yay &>/dev/null; then

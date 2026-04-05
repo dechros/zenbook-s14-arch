@@ -87,6 +87,11 @@ sudo systemctl daemon-reload
 sudo systemctl enable --now powertop
 sudo systemctl enable --now kbd-backlight-auto.service
 
+echo "=== Configuring Wayland for Electron apps ==="
+if ! grep -q '^ELECTRON_OZONE_PLATFORM_HINT' /etc/environment; then
+    echo 'ELECTRON_OZONE_PLATFORM_HINT=auto' | sudo tee -a /etc/environment
+fi
+
 echo "=== Configuring systemd-boot ==="
 sudo mkdir -p /boot/loader
 if [[ -f /boot/loader/loader.conf ]] && grep -q '^console-mode' /boot/loader/loader.conf; then

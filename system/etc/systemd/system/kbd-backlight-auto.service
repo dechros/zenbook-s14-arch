@@ -1,0 +1,12 @@
+[Unit]
+Description=Auto keyboard backlight (inverse of screen brightness)
+After=graphical.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/kbd-backlight-auto.sh
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

@@ -1,11 +1,4 @@
 #!/usr/bin/env python3
-"""Self-learning ambient brightness controller for screen and keyboard.
-
-Screen: changes target via org.gnome.Shell.Brightness.SetAutoBrightnessTarget.
-Keyboard: writes /sys/class/leds/asus::kbd_backlight/brightness directly.
-
-Observes user manual adjustments and nudges per-lux-bucket curves.
-"""
 import json
 import math
 import os
@@ -21,9 +14,9 @@ STATE_DIR = os.path.expanduser('~/.local/state/auto-brightness')
 CURVE_FILE = os.path.join(STATE_DIR, 'curve.json')
 
 POLL_SEC = 2
-BUCKET = 0.3          # log10 lux bucket width
-USER_COOLDOWN = 20    # seconds: skip auto-adjust after user change
-LUX_DELTA = 0.15      # log10 change required to trigger re-evaluation
+BUCKET = 0.3
+USER_COOLDOWN = 20
+LUX_DELTA = 0.15
 
 
 def read_int(path):
@@ -58,7 +51,6 @@ def save_state(screen, kbd, cal):
 
 
 def calibrate(cal, target, sysfs_pct):
-    """Record a (target, sysfs_pct) observation for screen mapping."""
     point = [round(target, 3), round(sysfs_pct, 3)]
     low, high = cal.get('low'), cal.get('high')
     if low is None or target < low[0] - 0.05:
@@ -66,7 +58,6 @@ def calibrate(cal, target, sysfs_pct):
     elif high is None or target > high[0] + 0.05:
         cal['high'] = point
     else:
-        # refine nearest
         if low and abs(target - low[0]) < abs(target - (high[0] if high else 1)):
             cal['low'] = point
         elif high:
@@ -74,7 +65,6 @@ def calibrate(cal, target, sysfs_pct):
 
 
 def sysfs_pct_to_target(sysfs_pct, cal):
-    """Invert calibration: given desired sysfs_pct, return target for shell."""
     low, high = cal.get('low'), cal.get('high')
     if not low or not high or high[0] - low[0] < 0.05:
         return max(0.0, min(1.0, sysfs_pct))
@@ -105,19 +95,15 @@ def predict(curve, raw, default_fn):
 
 
 def snap(curve, raw, fraction):
-    """Store user's chosen fraction at this lux bucket."""
     b = bucket_of(raw)
     curve[f'{b:.2f}'] = max(0.0, min(1.0, fraction))
 
 
 def default_screen(log10_raw):
-    # raw sensor, scale=0.001. covered=3k, dark=18k, indoor=100k, day=1M.
-    # log10: 3.5, 4.3, 5.0, 6.0 -> target: 0.15 .. 1.0
     return max(0.15, min(1.0, 0.15 + (log10_raw - 3.5) / 2.5 * 0.85))
 
 
 def default_kbd(log10_raw):
-    # dark (log~3.5) -> full kbd; indoor (log~5.0) -> off
     return max(0.0, min(1.0, 1.0 - (log10_raw - 3.5) / 1.5))
 
 

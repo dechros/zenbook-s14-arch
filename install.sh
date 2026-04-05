@@ -42,9 +42,8 @@ yay -S --needed --noconfirm google-chrome bibata-cursor-theme-bin \
 echo "=== Copying system files ==="
 sudo cp -r "$REPO_DIR/system/etc/"* /etc/
 sudo chmod 440 /etc/sudoers.d/gdm-wallpaper-sync
-sudo install -m 755 "$REPO_DIR/system/usr/local/bin/kbd-backlight-auto.sh" /usr/local/bin/kbd-backlight-auto.sh
 sudo install -m 755 "$REPO_DIR/system/usr/local/bin/power-profile-ac.sh" /usr/local/bin/power-profile-ac.sh
-sudo install -m 755 "$REPO_DIR/system/usr/local/bin/auto-brightness.sh" /usr/local/bin/auto-brightness.sh
+sudo install -m 755 "$REPO_DIR/system/usr/local/bin/auto-brightness.py" /usr/local/bin/auto-brightness.py
 sudo install -m 755 "$REPO_DIR/system/usr/local/bin/gdm-wallpaper-update" /usr/local/bin/gdm-wallpaper-update
 sudo install -m 755 "$REPO_DIR/system/usr/local/bin/gdm-wallpaper-sync.sh" /usr/local/bin/gdm-wallpaper-sync.sh
 sudo install -d -m 755 /etc/dconf/profile
@@ -121,7 +120,6 @@ sudo chsh -s /usr/bin/zsh "$USERNAME"
 echo "=== Setting up services ==="
 sudo systemctl daemon-reload
 sudo systemctl enable --now powertop
-sudo systemctl enable --now kbd-backlight-auto.service
 sudo udevadm control --reload-rules
 sudo udevadm trigger --subsystem-match=power_supply
 systemctl --user daemon-reload

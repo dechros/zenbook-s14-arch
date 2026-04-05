@@ -1,11 +1,11 @@
 [Unit]
-Description=Ambient light auto-brightness (workaround for gsd-power 49.1 bug)
+Description=Self-learning ambient brightness controller
 After=graphical-session.target
 PartOf=graphical-session.target
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/auto-brightness.sh
+ExecStart=/usr/local/bin/auto-brightness.py
 Restart=always
 RestartSec=5
 

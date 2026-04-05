@@ -23,7 +23,7 @@ rm -rf "$DRIVER_TMP"
 
 echo "=== Installing packages ==="
 sudo pacman -S --needed --noconfirm \
-    python-evdev libgpiod papirus-icon-theme \
+    python-evdev libgpiod papirus-icon-theme gnome-backgrounds \
     terminus-font powertop iw sof-firmware alsa-ucm-conf github-cli
 
 if ! command -v yay &>/dev/null; then
@@ -34,11 +34,12 @@ if ! command -v yay &>/dev/null; then
     rm -rf "$tmp"
 fi
 
-yay -S --needed --noconfirm google-chrome \
+yay -S --needed --noconfirm google-chrome bibata-cursor-theme-bin \
     ttf-meslo-nerd-font-powerlevel10k zsh-theme-powerlevel10k
 
 echo "=== Copying system files ==="
 sudo cp -r "$REPO_DIR/system/etc/"* /etc/
+sudo install -m 755 "$REPO_DIR/system/usr/local/bin/kbd-backlight-auto.sh" /usr/local/bin/kbd-backlight-auto.sh
 
 echo "=== Installing hotkey handler ==="
 if [[ ! -d "$USER_HOME/dev/hotkey-handler" ]]; then
@@ -61,6 +62,11 @@ gext install window-title-is-back@fthx
 gsettings set org.gnome.shell disable-extension-version-validation true
 gsettings set org.gnome.shell enabled-extensions "['dash-to-dock@micxgx.gmail.com', 'window-title-is-back@fthx', 'camera-osd@dechros', 'appindicatorsupport@rgcjonas.gmail.com']"
 
+echo "=== Setting GNOME appearance ==="
+gsettings set org.gnome.desktop.interface icon-theme 'Papirus'
+gsettings set org.gnome.desktop.interface cursor-theme 'Bibata-Modern-Classic'
+gsettings set org.gnome.desktop.wm.preferences button-layout 'appmenu:minimize,maximize,close'
+
 echo "=== Installing oh-my-zsh ==="
 if [[ ! -d "$USER_HOME/.oh-my-zsh" ]]; then
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
@@ -78,6 +84,7 @@ sudo chsh -s /usr/bin/zsh "$USERNAME"
 echo "=== Setting up services ==="
 sudo systemctl daemon-reload
 sudo systemctl enable --now powertop
+sudo systemctl enable --now kbd-backlight-auto.service
 
 echo "=== Configuring systemd-boot ==="
 sudo mkdir -p /boot/loader

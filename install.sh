@@ -107,6 +107,20 @@ elif [[ -f /boot/loader/loader.conf ]] && grep -q '^#console-mode' /boot/loader/
 else
     echo 'console-mode max' | sudo tee -a /boot/loader/loader.conf
 fi
+if grep -q '^timeout' /boot/loader/loader.conf; then
+    sudo sed -i 's/^timeout.*/timeout 0/' /boot/loader/loader.conf
+else
+    echo 'timeout 0' | sudo tee -a /boot/loader/loader.conf
+fi
+
+echo "=== Silencing boot/shutdown output ==="
+QUIET_FLAGS="quiet loglevel=3 rd.udev.log_level=3 vt.global_cursor_default=0 systemd.show_status=false"
+if [[ -f /etc/kernel/cmdline ]] && ! grep -q 'quiet' /etc/kernel/cmdline; then
+    sudo cp /etc/kernel/cmdline /etc/kernel/cmdline.bak
+    CURRENT=$(cat /etc/kernel/cmdline)
+    echo "$CURRENT $QUIET_FLAGS" | sudo tee /etc/kernel/cmdline
+    sudo mkinitcpio -P
+fi
 
 echo "=== Setting locale ==="
 sudo sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen

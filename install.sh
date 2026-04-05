@@ -24,7 +24,8 @@ rm -rf "$DRIVER_TMP"
 echo "=== Installing packages ==="
 sudo pacman -S --needed --noconfirm \
     python-evdev libgpiod papirus-icon-theme gnome-backgrounds gnome-characters \
-    terminus-font powertop iw sof-firmware alsa-ucm-conf github-cli
+    terminus-font powertop iw sof-firmware alsa-ucm-conf github-cli \
+    qt5-wayland qt6-wayland
 
 if ! command -v yay &>/dev/null; then
     echo "=== Installing yay ==="

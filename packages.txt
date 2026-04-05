@@ -8,6 +8,8 @@ sof-firmware
 alsa-ucm-conf
 gnome-backgrounds
 gnome-characters
+qt5-wayland
+qt6-wayland
 
 # AUR (yay)
 google-chrome

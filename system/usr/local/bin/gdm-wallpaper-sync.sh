@@ -1,17 +1,44 @@
 #!/bin/bash
 set -u
 
-unq() { sed "s/^'//;s/'$//"; }
+g() { gsettings get "$1" "$2"; }
+
+write_gdm_ini() {
+    cat <<EOF
+[org/gnome/desktop/background]
+picture-uri=$(g org.gnome.desktop.background picture-uri)
+picture-uri-dark=$(g org.gnome.desktop.background picture-uri-dark)
+picture-options=$(g org.gnome.desktop.background picture-options)
+primary-color=$(g org.gnome.desktop.background primary-color)
+secondary-color=$(g org.gnome.desktop.background secondary-color)
+
+[org/gnome/desktop/interface]
+color-scheme=$(g org.gnome.desktop.interface color-scheme)
+icon-theme=$(g org.gnome.desktop.interface icon-theme)
+cursor-theme=$(g org.gnome.desktop.interface cursor-theme)
+cursor-size=$(g org.gnome.desktop.interface cursor-size)
+gtk-theme=$(g org.gnome.desktop.interface gtk-theme)
+font-name=$(g org.gnome.desktop.interface font-name)
+document-font-name=$(g org.gnome.desktop.interface document-font-name)
+monospace-font-name=$(g org.gnome.desktop.interface monospace-font-name)
+text-scaling-factor=$(g org.gnome.desktop.interface text-scaling-factor)
+clock-format=$(g org.gnome.desktop.interface clock-format)
+clock-show-seconds=$(g org.gnome.desktop.interface clock-show-seconds)
+clock-show-weekday=$(g org.gnome.desktop.interface clock-show-weekday)
+
+[org/gnome/desktop/peripherals/mouse]
+speed=$(g org.gnome.desktop.peripherals.mouse speed)
+natural-scroll=$(g org.gnome.desktop.peripherals.mouse natural-scroll)
+
+[org/gnome/desktop/peripherals/touchpad]
+speed=$(g org.gnome.desktop.peripherals.touchpad speed)
+tap-to-click=$(g org.gnome.desktop.peripherals.touchpad tap-to-click)
+natural-scroll=$(g org.gnome.desktop.peripherals.touchpad natural-scroll)
+EOF
+}
 
 sync_settings() {
-    local uri icon cursor speed scale
-    uri=$(gsettings get org.gnome.desktop.background picture-uri-dark | unq)
-    icon=$(gsettings get org.gnome.desktop.interface icon-theme | unq)
-    cursor=$(gsettings get org.gnome.desktop.interface cursor-theme | unq)
-    speed=$(gsettings get org.gnome.desktop.peripherals.mouse speed)
-    scale=$(gsettings get org.gnome.desktop.interface text-scaling-factor)
-    [[ -z "$uri" ]] && return
-    sudo -n /usr/local/bin/gdm-wallpaper-update "$uri" "$icon" "$cursor" "$speed" "$scale" || true
+    write_gdm_ini | sudo -n /usr/local/bin/gdm-wallpaper-update || true
 }
 
 sync_monitors() {
@@ -19,19 +46,39 @@ sync_monitors() {
     [[ -f "$f" ]] && sudo -n /usr/local/bin/gdm-wallpaper-update monitors "$f" || true
 }
 
-sync_all() {
-    sync_settings
-    sync_monitors
-}
+sync_settings
+sync_monitors
 
-sync_all
+KEYS=(
+    "org.gnome.desktop.background picture-uri-dark"
+    "org.gnome.desktop.background picture-uri"
+    "org.gnome.desktop.background picture-options"
+    "org.gnome.desktop.background primary-color"
+    "org.gnome.desktop.background secondary-color"
+    "org.gnome.desktop.interface color-scheme"
+    "org.gnome.desktop.interface icon-theme"
+    "org.gnome.desktop.interface cursor-theme"
+    "org.gnome.desktop.interface cursor-size"
+    "org.gnome.desktop.interface gtk-theme"
+    "org.gnome.desktop.interface font-name"
+    "org.gnome.desktop.interface document-font-name"
+    "org.gnome.desktop.interface monospace-font-name"
+    "org.gnome.desktop.interface text-scaling-factor"
+    "org.gnome.desktop.interface clock-format"
+    "org.gnome.desktop.interface clock-show-seconds"
+    "org.gnome.desktop.interface clock-show-weekday"
+    "org.gnome.desktop.peripherals.mouse speed"
+    "org.gnome.desktop.peripherals.mouse natural-scroll"
+    "org.gnome.desktop.peripherals.touchpad speed"
+    "org.gnome.desktop.peripherals.touchpad tap-to-click"
+    "org.gnome.desktop.peripherals.touchpad natural-scroll"
+)
 
 (
-    gsettings monitor org.gnome.desktop.background picture-uri-dark
-    gsettings monitor org.gnome.desktop.interface icon-theme
-    gsettings monitor org.gnome.desktop.interface cursor-theme
-    gsettings monitor org.gnome.desktop.interface text-scaling-factor
-    gsettings monitor org.gnome.desktop.peripherals.mouse speed
+    for k in "${KEYS[@]}"; do
+        gsettings monitor $k &
+    done
+    wait
 ) | while read -r _; do
     sync_settings
 done &

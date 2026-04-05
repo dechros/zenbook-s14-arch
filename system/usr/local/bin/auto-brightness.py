@@ -39,21 +39,50 @@ def bucket_of(raw):
     return round(log_lux(raw) / BUCKET) * BUCKET
 
 
-def load_curves():
+def load_state():
     os.makedirs(STATE_DIR, exist_ok=True)
     try:
         with open(CURVE_FILE) as f:
             d = json.load(f)
-            return d.get('screen', {}), d.get('kbd', {})
+            return (d.get('screen', {}), d.get('kbd', {}),
+                    d.get('cal', {'low': None, 'high': None}))
     except Exception:
-        return {}, {}
+        return {}, {}, {'low': None, 'high': None}
 
 
-def save_curves(screen, kbd):
+def save_state(screen, kbd, cal):
     tmp = CURVE_FILE + '.tmp'
     with open(tmp, 'w') as f:
-        json.dump({'screen': screen, 'kbd': kbd}, f, indent=2)
+        json.dump({'screen': screen, 'kbd': kbd, 'cal': cal}, f, indent=2)
     os.replace(tmp, CURVE_FILE)
+
+
+def calibrate(cal, target, sysfs_pct):
+    """Record a (target, sysfs_pct) observation for screen mapping."""
+    point = [round(target, 3), round(sysfs_pct, 3)]
+    low, high = cal.get('low'), cal.get('high')
+    if low is None or target < low[0] - 0.05:
+        cal['low'] = point
+    elif high is None or target > high[0] + 0.05:
+        cal['high'] = point
+    else:
+        # refine nearest
+        if low and abs(target - low[0]) < abs(target - (high[0] if high else 1)):
+            cal['low'] = point
+        elif high:
+            cal['high'] = point
+
+
+def sysfs_pct_to_target(sysfs_pct, cal):
+    """Invert calibration: given desired sysfs_pct, return target for shell."""
+    low, high = cal.get('low'), cal.get('high')
+    if not low or not high or high[0] - low[0] < 0.05:
+        return max(0.0, min(1.0, sysfs_pct))
+    slope = (high[1] - low[1]) / (high[0] - low[0])
+    if slope < 0.05:
+        return max(0.0, min(1.0, sysfs_pct))
+    target = low[0] + (sysfs_pct - low[1]) / slope
+    return max(0.0, min(1.0, target))
 
 
 def predict(curve, raw, default_fn):
@@ -112,7 +141,7 @@ def set_kbd_level(level):
 
 
 def main():
-    screen_curve, kbd_curve = load_curves()
+    screen_curve, kbd_curve, cal = load_state()
     screen_max = read_int(SCREEN_MAX)
     kbd_max = read_int(KBD_MAX)
 
@@ -134,14 +163,14 @@ def main():
 
             if abs(screen_user_delta) > screen_max * 0.03:
                 snap(screen_curve, raw, cur_screen / screen_max)
-                save_curves(screen_curve, kbd_curve)
+                save_state(screen_curve, kbd_curve, cal)
                 user_change_until = now + USER_COOLDOWN
                 last_screen_set = cur_screen
                 print(f'learn screen: lux={raw} val={cur_screen}/{screen_max}', flush=True)
 
             if abs(kbd_user_delta) >= 1:
                 snap(kbd_curve, raw, cur_kbd / kbd_max)
-                save_curves(screen_curve, kbd_curve)
+                save_state(screen_curve, kbd_curve, cal)
                 user_change_until = now + USER_COOLDOWN
                 last_kbd_set = cur_kbd
                 print(f'learn kbd: lux={raw} val={cur_kbd}/{kbd_max}', flush=True)
@@ -149,14 +178,18 @@ def main():
             if now >= user_change_until:
                 lx_change = abs(log_lux(raw) - log_lux(last_raw))
                 if lx_change >= LUX_DELTA or last_target < 0:
-                    screen_target = predict(screen_curve, raw, default_screen)
+                    desired_sysfs_pct = predict(screen_curve, raw, default_screen)
+                    screen_target = sysfs_pct_to_target(desired_sysfs_pct, cal)
                     kbd_target = predict(kbd_curve, raw, default_kbd)
 
                     if abs(screen_target - last_target) > 0.02 or last_target < 0:
                         set_screen_target(screen_target)
                         last_target = screen_target
                         time.sleep(1)
-                        last_screen_set = read_int(SCREEN_BL)
+                        resulting = read_int(SCREEN_BL)
+                        last_screen_set = resulting
+                        calibrate(cal, screen_target, resulting / screen_max)
+                        save_state(screen_curve, kbd_curve, cal)
 
                     kbd_level = round(kbd_target * kbd_max)
                     if kbd_level != cur_kbd:

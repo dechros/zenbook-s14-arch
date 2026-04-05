@@ -1,23 +1,47 @@
 #!/bin/bash
 set -e
+
+if [[ "$1" == "monitors" ]]; then
+    SRC="$2"
+    [[ -z "$SRC" || ! -f "$SRC" ]] && { echo "missing src file" >&2; exit 1; }
+    install -d -o gdm -g gdm -m 755 /var/lib/gdm/.config
+    install -o gdm -g gdm -m 644 "$SRC" /var/lib/gdm/.config/monitors.xml
+    exit 0
+fi
+
 URI="$1"
+ICON_THEME="$2"
+CURSOR_THEME="$3"
+MOUSE_SPEED="$4"
+TEXT_SCALE="$5"
+
 if [[ -z "$URI" ]]; then
-    echo "usage: $0 <uri>" >&2
+    echo "usage: $0 <uri> [icon-theme] [cursor-theme] [mouse-speed] [text-scale]" >&2
+    echo "       $0 monitors <path>" >&2
     exit 1
 fi
 if [[ "$URI" != file://* ]]; then
     echo "refusing non-file URI: $URI" >&2
     exit 1
 fi
-if [[ "$URI" == *\'* ]]; then
-    echo "refusing URI with single quote" >&2
-    exit 1
-fi
+for v in "$URI" "$ICON_THEME" "$CURSOR_THEME" "$MOUSE_SPEED" "$TEXT_SCALE"; do
+    [[ "$v" == *\'* ]] && { echo "refusing value with single quote" >&2; exit 1; }
+done
+
 mkdir -p /etc/dconf/db/gdm.d
-cat > /etc/dconf/db/gdm.d/01-background <<EOF
-[org/gnome/desktop/background]
-picture-uri='$URI'
-picture-uri-dark='$URI'
-picture-options='zoom'
-EOF
+{
+    echo "[org/gnome/desktop/background]"
+    echo "picture-uri='$URI'"
+    echo "picture-uri-dark='$URI'"
+    echo "picture-options='zoom'"
+    echo ""
+    echo "[org/gnome/desktop/interface]"
+    [[ -n "$ICON_THEME" ]] && echo "icon-theme='$ICON_THEME'"
+    [[ -n "$CURSOR_THEME" ]] && echo "cursor-theme='$CURSOR_THEME'"
+    [[ -n "$TEXT_SCALE" ]] && echo "text-scaling-factor=$TEXT_SCALE"
+    echo ""
+    echo "[org/gnome/desktop/peripherals/mouse]"
+    [[ -n "$MOUSE_SPEED" ]] && echo "speed=$MOUSE_SPEED"
+} > /etc/dconf/db/gdm.d/01-sync
+
 dconf update

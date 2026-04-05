@@ -27,7 +27,6 @@ Post-install configuration for ASUS Zenbook S14 UX5406SA running Arch Linux with
 Installs firmware files from [dantmnf/zenbook-s14-linux](https://github.com/dantmnf/zenbook-s14-linux) for:
 
 - ISH firmware (`ish_lnlm_ef534c00_fb3b8d86.bin`) -- required for sensor hub
-- SOF topology (`sof-lnl-cs42l43-l0-cs35l56-l23-2ch.tplg`) -- required for audio
 
 ## Install
 

@@ -1,0 +1,13 @@
+[Unit]
+Description=Ambient light auto-brightness (workaround for gsd-power 49.1 bug)
+After=graphical-session.target
+PartOf=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/auto-brightness.sh
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=graphical-session.target

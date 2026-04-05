@@ -44,13 +44,17 @@ echo "=== Copying system files ==="
 sudo cp -r "$REPO_DIR/system/etc/"* /etc/
 
 echo "=== Installing hotkey handler ==="
-git clone --depth=1 https://github.com/dechros/hotkey-handler.git "$USER_HOME/dev/hotkey-handler"
+if [[ ! -d "$USER_HOME/dev/hotkey-handler" ]]; then
+    git clone --depth=1 https://github.com/dechros/hotkey-handler.git "$USER_HOME/dev/hotkey-handler"
+fi
 "$USER_HOME/dev/hotkey-handler/install.sh"
 
 echo "=== Installing GNOME extensions ==="
 mkdir -p "$USER_HOME/.local/share/gnome-shell/extensions"
 
-git clone --depth=1 https://github.com/dechros/gnome-shell-helper.git "$USER_HOME/dev/gnome-shell-helper"
+if [[ ! -d "$USER_HOME/dev/gnome-shell-helper" ]]; then
+    git clone --depth=1 https://github.com/dechros/gnome-shell-helper.git "$USER_HOME/dev/gnome-shell-helper"
+fi
 ln -sf "$USER_HOME/dev/gnome-shell-helper" "$USER_HOME/.local/share/gnome-shell/extensions/camera-osd@dechros"
 
 yay -S --needed --noconfirm gnome-shell-extension-dash-to-dock gnome-extensions-cli
@@ -72,7 +76,7 @@ cp "$REPO_DIR/user/.local/share/icons/"* "$USER_HOME/.local/share/icons/"
 
 cp "$REPO_DIR/user/home/.zshrc" "$USER_HOME/.zshrc"
 cp "$REPO_DIR/user/home/.p10k.zsh" "$USER_HOME/.p10k.zsh"
-chsh -s /usr/bin/zsh "$USERNAME"
+sudo chsh -s /usr/bin/zsh "$USERNAME"
 
 echo "=== Setting up services ==="
 sudo systemctl daemon-reload
@@ -82,11 +86,15 @@ echo "=== Configuring systemd-boot ==="
 sudo mkdir -p /boot/loader
 if [[ -f /boot/loader/loader.conf ]] && grep -q '^console-mode' /boot/loader/loader.conf; then
     sudo sed -i 's/^console-mode.*/console-mode max/' /boot/loader/loader.conf
+elif [[ -f /boot/loader/loader.conf ]] && grep -q '^#console-mode' /boot/loader/loader.conf; then
+    sudo sed -i 's/^#console-mode.*/console-mode max/' /boot/loader/loader.conf
 else
     echo 'console-mode max' | sudo tee -a /boot/loader/loader.conf
 fi
 
 echo "=== Setting locale ==="
+sudo sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
+sudo sed -i 's/^#tr_TR.UTF-8 UTF-8/tr_TR.UTF-8 UTF-8/' /etc/locale.gen
 sudo locale-gen
 
 echo "=== Done. Reboot recommended. ==="

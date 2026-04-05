@@ -22,7 +22,6 @@ CURVE_FILE = os.path.join(STATE_DIR, 'curve.json')
 
 POLL_SEC = 2
 BUCKET = 0.3          # log10 lux bucket width
-NUDGE = 0.05          # fractional curve adjustment per user correction
 USER_COOLDOWN = 20    # seconds: skip auto-adjust after user change
 LUX_DELTA = 0.15      # log10 change required to trigger re-evaluation
 
@@ -76,13 +75,10 @@ def predict(curve, raw, default_fn):
     return curve[f'{keys[-1]:.2f}']
 
 
-def nudge(curve, raw, direction, default_fn):
-    """Move curve[bucket] by direction*NUDGE toward 0 or 1."""
+def snap(curve, raw, fraction):
+    """Store user's chosen fraction at this lux bucket."""
     b = bucket_of(raw)
-    k = f'{b:.2f}'
-    cur = curve.get(k, default_fn(log_lux(raw)))
-    new = max(0.0, min(1.0, cur + direction * NUDGE))
-    curve[k] = new
+    curve[f'{b:.2f}'] = max(0.0, min(1.0, fraction))
 
 
 def default_screen(log10_raw):
@@ -137,20 +133,18 @@ def main():
             kbd_user_delta = cur_kbd - last_kbd_set
 
             if abs(screen_user_delta) > screen_max * 0.03:
-                direction = 1 if screen_user_delta > 0 else -1
-                nudge(screen_curve, raw, direction, default_screen)
+                snap(screen_curve, raw, cur_screen / screen_max)
                 save_curves(screen_curve, kbd_curve)
                 user_change_until = now + USER_COOLDOWN
                 last_screen_set = cur_screen
-                print(f'learn screen: lux={raw} dir={direction}', flush=True)
+                print(f'learn screen: lux={raw} val={cur_screen}/{screen_max}', flush=True)
 
             if abs(kbd_user_delta) >= 1:
-                direction = 1 if kbd_user_delta > 0 else -1
-                nudge(kbd_curve, raw, direction, default_kbd)
+                snap(kbd_curve, raw, cur_kbd / kbd_max)
                 save_curves(screen_curve, kbd_curve)
                 user_change_until = now + USER_COOLDOWN
                 last_kbd_set = cur_kbd
-                print(f'learn kbd: lux={raw} dir={direction}', flush=True)
+                print(f'learn kbd: lux={raw} val={cur_kbd}/{kbd_max}', flush=True)
 
             if now >= user_change_until:
                 lx_change = abs(log_lux(raw) - log_lux(last_raw))

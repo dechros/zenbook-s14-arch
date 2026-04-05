@@ -26,7 +26,7 @@ rm -rf "$DRIVER_TMP"
 
 echo "=== Installing packages ==="
 sudo pacman -S --needed --noconfirm \
-    python-evdev papirus-icon-theme \
+    python-evdev libgpiod papirus-icon-theme \
     terminus-font powertop iw sof-firmware alsa-ucm-conf github-cli
 
 if ! command -v yay &>/dev/null; then
@@ -37,7 +37,7 @@ if ! command -v yay &>/dev/null; then
     rm -rf "$tmp"
 fi
 
-yay -S --needed --noconfirm google-chrome python-gpiod \
+yay -S --needed --noconfirm google-chrome \
     ttf-meslo-nerd-font-powerlevel10k zsh-theme-powerlevel10k
 
 echo "=== Copying system files ==="

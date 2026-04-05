@@ -17,11 +17,8 @@ echo "=== Installing Zenbook S14 drivers ==="
 DRIVER_TMP=$(mktemp -d)
 git clone --depth=1 https://github.com/dantmnf/zenbook-s14-linux.git "$DRIVER_TMP"
 sudo mkdir -p /lib/firmware/intel/ish
-sudo mkdir -p /lib/firmware/intel/sof-ipc4-tplg
 sudo cp "$DRIVER_TMP/firmware/intel/ish/ish_lnlm_ef534c00_fb3b8d86.bin" \
     /lib/firmware/intel/ish/
-sudo cp "$DRIVER_TMP/firmware/intel/sof-ipc4-tplg/sof-lnl-cs42l43-l0-cs35l56-l23-2ch.tplg" \
-    /lib/firmware/intel/sof-ipc4-tplg/
 rm -rf "$DRIVER_TMP"
 
 echo "=== Installing packages ==="

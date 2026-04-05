@@ -7,6 +7,7 @@ iw
 sof-firmware
 alsa-ucm-conf
 gnome-backgrounds
+gnome-characters
 
 # AUR (yay)
 google-chrome

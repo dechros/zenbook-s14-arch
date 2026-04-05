@@ -1,0 +1,23 @@
+#!/bin/bash
+set -e
+URI="$1"
+if [[ -z "$URI" ]]; then
+    echo "usage: $0 <uri>" >&2
+    exit 1
+fi
+if [[ "$URI" != file://* ]]; then
+    echo "refusing non-file URI: $URI" >&2
+    exit 1
+fi
+if [[ "$URI" == *\'* ]]; then
+    echo "refusing URI with single quote" >&2
+    exit 1
+fi
+mkdir -p /etc/dconf/db/gdm.d
+cat > /etc/dconf/db/gdm.d/01-background <<EOF
+[org/gnome/desktop/background]
+picture-uri='$URI'
+picture-uri-dark='$URI'
+picture-options='zoom'
+EOF
+dconf update

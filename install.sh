@@ -25,7 +25,8 @@ echo "=== Installing packages ==="
 sudo pacman -S --needed --noconfirm \
     python-evdev libgpiod papirus-icon-theme gnome-backgrounds gnome-characters \
     terminus-font powertop iw sof-firmware alsa-ucm-conf github-cli \
-    qt5-wayland qt6-wayland
+    qt5-wayland qt6-wayland \
+    vulkan-intel lib32-vulkan-intel vulkan-tools
 
 if ! command -v yay &>/dev/null; then
     echo "=== Installing yay ==="
@@ -40,7 +41,10 @@ yay -S --needed --noconfirm google-chrome bibata-cursor-theme-bin \
 
 echo "=== Copying system files ==="
 sudo cp -r "$REPO_DIR/system/etc/"* /etc/
+sudo chmod 440 /etc/sudoers.d/gdm-wallpaper-sync
 sudo install -m 755 "$REPO_DIR/system/usr/local/bin/kbd-backlight-auto.sh" /usr/local/bin/kbd-backlight-auto.sh
+sudo install -m 755 "$REPO_DIR/system/usr/local/bin/gdm-wallpaper-update" /usr/local/bin/gdm-wallpaper-update
+sudo install -m 755 "$REPO_DIR/system/usr/local/bin/gdm-wallpaper-sync.sh" /usr/local/bin/gdm-wallpaper-sync.sh
 
 echo "=== Installing hotkey handler ==="
 if [[ ! -d "$USER_HOME/dev/hotkey-handler" ]]; then
@@ -86,6 +90,8 @@ echo "=== Setting up services ==="
 sudo systemctl daemon-reload
 sudo systemctl enable --now powertop
 sudo systemctl enable --now kbd-backlight-auto.service
+systemctl --user daemon-reload
+systemctl --user enable --now gdm-wallpaper-sync.service
 
 echo "=== Configuring Wayland for Electron apps ==="
 if ! grep -q '^ELECTRON_OZONE_PLATFORM_HINT' /etc/environment; then

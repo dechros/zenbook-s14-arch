@@ -100,7 +100,7 @@ gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings \
     "['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/emoji-picker/']"
 gsettings set "$EMOJI_PATH" name 'Emoji Picker'
 gsettings set "$EMOJI_PATH" command 'gnome-characters'
-gsettings set "$EMOJI_PATH" binding '<Super>period'
+gsettings set "$EMOJI_PATH" binding '<Super>ccedilla'
 
 echo "=== Installing oh-my-zsh ==="
 if [[ ! -d "$USER_HOME/.oh-my-zsh" ]]; then

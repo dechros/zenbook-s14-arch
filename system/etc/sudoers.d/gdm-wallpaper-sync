@@ -1,1 +1,1 @@
-%wheel ALL=(root) NOPASSWD: /usr/local/bin/gdm-wallpaper-update
+%wheel ALL=(root) NOPASSWD: /usr/local/bin/gdm-wallpaper-update *

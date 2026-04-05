@@ -94,6 +94,14 @@ gsettings set org.gnome.settings-daemon.plugins.power power-button-action 'suspe
 gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-timeout 900
 gsettings set org.gnome.desktop.session idle-delay 300
 
+echo "=== Setting custom keyboard shortcuts ==="
+EMOJI_PATH="org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/emoji-picker/"
+gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings \
+    "['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/emoji-picker/']"
+gsettings set "$EMOJI_PATH" name 'Emoji Picker'
+gsettings set "$EMOJI_PATH" command 'gnome-characters'
+gsettings set "$EMOJI_PATH" binding '<Super>period'
+
 echo "=== Installing oh-my-zsh ==="
 if [[ ! -d "$USER_HOME/.oh-my-zsh" ]]; then
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended

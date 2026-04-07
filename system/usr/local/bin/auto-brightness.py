@@ -1,26 +1,23 @@
 #!/usr/bin/env python3
 import math
 import os
+import subprocess
 import time
 
 ALS = '/sys/bus/iio/devices/iio:device2/in_illuminance_raw'
-SCREEN_BL = '/sys/class/backlight/intel_backlight/brightness'
+KBD_BL = '/sys/class/leds/asus::kbd_backlight/brightness'
 SCREEN_MIN = 4
 SCREEN_MAX = 400
-KBD_BL = '/sys/class/leds/asus::kbd_backlight/brightness'
 KBD_MAX = 3
 POLL = 2
 LUX_CHANGE = 0.15
+DBUS_BUS = 'unix:path=/run/user/1000/bus'
+DBUS_ENV = {**os.environ, 'DBUS_SESSION_BUS_ADDRESS': DBUS_BUS}
 
 
 def read_sysfs(path):
     with open(path) as f:
         return int(f.read().strip())
-
-
-def write_sysfs(path, val):
-    with open(path, 'w') as f:
-        f.write(str(val))
 
 
 def log_lux(lux):
@@ -39,20 +36,54 @@ def lux_to_kbd(lux):
     return max(0, min(KBD_MAX, round(frac * KBD_MAX)))
 
 
-def disable_shell_auto():
-    import subprocess
+def gdbus(method, *args):
+    subprocess.run(
+        ['runuser', '-u', 'dechros', '--',
+         'gdbus', 'call', '--session',
+         '--dest', 'org.gnome.Mutter.DisplayConfig',
+         '--object-path', '/org/gnome/Mutter/DisplayConfig',
+         '--method', method] + list(args),
+        env=DBUS_ENV, capture_output=True, timeout=5)
+
+
+def get_serial():
+    r = subprocess.run(
+        ['runuser', '-u', 'dechros', '--',
+         'gdbus', 'call', '--session',
+         '--dest', 'org.gnome.Mutter.DisplayConfig',
+         '--object-path', '/org/gnome/Mutter/DisplayConfig',
+         '--method', 'org.freedesktop.DBus.Properties.Get',
+         'org.gnome.Mutter.DisplayConfig', 'Backlight'],
+        env=DBUS_ENV, capture_output=True, text=True, timeout=5)
+    if r.returncode == 0 and 'uint32' in r.stdout:
+        return r.stdout.split('uint32 ')[1].split(',')[0]
+    return None
+
+
+def set_screen(val):
+    serial = get_serial()
+    if serial:
+        gdbus('org.gnome.Mutter.DisplayConfig.SetBacklight',
+              serial, 'eDP-1', str(val))
+
+
+def set_kbd(val):
     try:
-        subprocess.run(
-            ['runuser', '-u', 'dechros', '--',
-             'gdbus', 'call', '--session',
-             '--dest', 'org.gnome.Shell',
-             '--object-path', '/org/gnome/Shell/Brightness',
-             '--method', 'org.gnome.Shell.Brightness.SetAutoBrightnessTarget',
-             '--', '-1.0'],
-            env={**os.environ, 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus'},
-            capture_output=True, timeout=5)
+        with open(KBD_BL, 'w') as f:
+            f.write(str(val))
     except Exception:
         pass
+
+
+def disable_shell_auto():
+    subprocess.run(
+        ['runuser', '-u', 'dechros', '--',
+         'gdbus', 'call', '--session',
+         '--dest', 'org.gnome.Shell',
+         '--object-path', '/org/gnome/Shell/Brightness',
+         '--method', 'org.gnome.Shell.Brightness.SetAutoBrightnessTarget',
+         '--', '-1.0'],
+        env=DBUS_ENV, capture_output=True, timeout=5)
 
 
 def main():
@@ -60,8 +91,8 @@ def main():
     last_lux = read_sysfs(ALS)
     screen_val = lux_to_screen(last_lux)
     kbd_val = lux_to_kbd(last_lux)
-    write_sysfs(SCREEN_BL, screen_val)
-    write_sysfs(KBD_BL, kbd_val)
+    set_screen(screen_val)
+    set_kbd(kbd_val)
 
     while True:
         try:
@@ -70,8 +101,8 @@ def main():
                 last_lux = lux
                 screen_val = lux_to_screen(lux)
                 kbd_val = lux_to_kbd(lux)
-                write_sysfs(SCREEN_BL, screen_val)
-                write_sysfs(KBD_BL, kbd_val)
+                set_screen(screen_val)
+                set_kbd(kbd_val)
         except Exception:
             pass
         time.sleep(POLL)

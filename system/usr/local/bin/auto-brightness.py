@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
 import math
-import os
-import subprocess
 import time
 
 ALS = '/sys/bus/iio/devices/iio:device2/in_illuminance_raw'
+SCREEN_BL = '/sys/class/backlight/intel_backlight/brightness'
+SCREEN_MIN = 4
+SCREEN_MAX = 400
 KBD_BL = '/sys/class/leds/asus::kbd_backlight/brightness'
 KBD_MAX = 3
 POLL = 2
-DBUS_BUS = 'unix:path=/run/user/1000/bus'
-DBUS_USER = 'dechros'
 
 
 def read_sysfs(path):
@@ -17,58 +16,61 @@ def read_sysfs(path):
         return int(f.read().strip())
 
 
+def write_sysfs(path, val):
+    with open(path, 'w') as f:
+        f.write(str(val))
+
+
 def lux_to_screen(lux):
     if lux <= 0:
         lux = 1
     t = math.log10(lux)
-    # raw 3000(dark)→target 0.0(sysfs 202), raw 200000(bright)→target 0.5(sysfs 400)
-    return max(0.0, min(0.5, (t - 3.5) / 1.8 * 0.5))
+    frac = (t - 3.5) / 1.8
+    frac = max(0.0, min(1.0, frac))
+    return round(SCREEN_MIN + frac * (SCREEN_MAX - SCREEN_MIN))
 
 
 def lux_to_kbd(lux):
     if lux <= 0:
         lux = 1
     t = math.log10(lux)
-    # raw 3000(dark)→3, raw 200000(bright)→0
-    return max(0, min(KBD_MAX, round(KBD_MAX * (1.0 - (t - 3.5) / 1.8))))
+    frac = 1.0 - (t - 3.5) / 1.8
+    return max(0, min(KBD_MAX, round(frac * KBD_MAX)))
 
 
-def set_screen(target):
-    subprocess.run(
-        ['runuser', '-u', DBUS_USER, '--',
-         'gdbus', 'call', '--session',
-         '--dest', 'org.gnome.Shell',
-         '--object-path', '/org/gnome/Shell/Brightness',
-         '--method', 'org.gnome.Shell.Brightness.SetAutoBrightnessTarget',
-         f'{target:.4f}'],
-        env={**os.environ, 'DBUS_SESSION_BUS_ADDRESS': DBUS_BUS},
-        capture_output=True, timeout=5)
-
-
-def set_kbd(level):
+def disable_shell_auto():
+    import subprocess, os
     try:
-        with open(KBD_BL, 'w') as f:
-            f.write(str(level))
+        subprocess.run(
+            ['runuser', '-u', 'dechros', '--',
+             'gdbus', 'call', '--session',
+             '--dest', 'org.gnome.Shell',
+             '--object-path', '/org/gnome/Shell/Brightness',
+             '--method', 'org.gnome.Shell.Brightness.SetAutoBrightnessTarget',
+             '--', '-1.0'],
+            env={**os.environ, 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus'},
+            capture_output=True, timeout=5)
     except Exception:
         pass
 
 
 def main():
-    prev_screen_target = -1.0
+    disable_shell_auto()
+    prev_screen = -1
     prev_kbd = -1
 
     while True:
         try:
             lux = read_sysfs(ALS)
-            screen_target = lux_to_screen(lux)
+            screen = lux_to_screen(lux)
             kbd = lux_to_kbd(lux)
 
-            if abs(screen_target - prev_screen_target) > 0.01:
-                set_screen(screen_target)
-                prev_screen_target = screen_target
+            if screen != prev_screen:
+                write_sysfs(SCREEN_BL, screen)
+                prev_screen = screen
 
             if kbd != prev_kbd:
-                set_kbd(kbd)
+                write_sysfs(KBD_BL, kbd)
                 prev_kbd = kbd
         except Exception:
             pass

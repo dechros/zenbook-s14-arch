@@ -67,13 +67,12 @@ def calibrate(cal, target, sysfs_pct):
 
 def sysfs_pct_to_target(sysfs_pct, cal):
     low, high = cal.get('low'), cal.get('high')
-    if not low or not high or high[0] - low[0] < 0.05:
-        return max(0.0, min(1.0, sysfs_pct))
-    slope = (high[1] - low[1]) / (high[0] - low[0])
-    if slope < 0.05:
-        return max(0.0, min(1.0, sysfs_pct))
-    target = low[0] + (sysfs_pct - low[1]) / slope
-    return max(0.0, min(1.0, target))
+    if low and high and high[0] - low[0] > 0.02:
+        slope = (high[1] - low[1]) / (high[0] - low[0])
+        if slope > 0.05:
+            target = low[0] + (sysfs_pct - low[1]) / slope
+            return max(0.0, min(1.0, target))
+    return max(0.0, min(0.5, sysfs_pct * 0.5))
 
 
 def predict(curve, raw, default_fn):
@@ -126,17 +125,27 @@ def find_session_bus():
 
 def set_screen_target(target):
     bus, uid = find_session_bus()
-    if not bus:
+    if not bus or not uid:
         return
-    env = os.environ.copy()
-    env['DBUS_SESSION_BUS_ADDRESS'] = bus
-    subprocess.run([
+    r = subprocess.run([
+        'runuser', '-u', _get_username(uid), '--',
         'gdbus', 'call', '--session',
         '--dest', 'org.gnome.Shell',
         '--object-path', '/org/gnome/Shell/Brightness',
         '--method', 'org.gnome.Shell.Brightness.SetAutoBrightnessTarget',
         f'{target:.3f}',
-    ], check=False, capture_output=True, timeout=5, env=env)
+    ], check=False, capture_output=True, timeout=5, text=True,
+       env={**os.environ, 'DBUS_SESSION_BUS_ADDRESS': bus})
+    if r.returncode != 0:
+        print(f'gdbus FAIL: {r.stderr.strip()}', flush=True)
+
+
+def _get_username(uid):
+    try:
+        import pwd
+        return pwd.getpwuid(int(uid)).pw_name
+    except Exception:
+        return 'dechros'
 
 
 def set_kbd_level(level):
@@ -187,6 +196,7 @@ def main():
                     desired_sysfs_pct = predict(screen_curve, raw, default_screen)
                     screen_target = sysfs_pct_to_target(desired_sysfs_pct, cal)
                     kbd_target = predict(kbd_curve, raw, default_kbd)
+                    print(f'eval: lux={raw} desired={desired_sysfs_pct:.2f} target={screen_target:.3f} kbd={kbd_target:.2f}', flush=True)
 
                     if abs(screen_target - last_target) > 0.02 or last_target < 0:
                         set_screen_target(screen_target)

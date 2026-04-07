@@ -13,6 +13,7 @@ KBD_MAX = 3
 POLL = 2
 LUX_CHANGE = 0.15
 CURVE_FILE = '/var/lib/auto-brightness/curve.json'
+USER_COOLDOWN = 3
 
 
 def read_sysfs(path):
@@ -61,8 +62,7 @@ def interp(points, lux):
 
 
 def snap(points, lux, val):
-    t = f'{log_lux(lux):.1f}'
-    points[t] = val
+    points[f'{log_lux(lux):.1f}'] = val
 
 
 def load_curve():
@@ -112,27 +112,36 @@ def main():
     disable_shell_auto()
     screen_curve, kbd_curve = load_curve()
     last_lux = read_sysfs(ALS)
-    last_screen_set = read_sysfs(SCREEN_BL)
-    last_kbd_set = read_sysfs(KBD_BL)
     screen_locked = False
     kbd_locked = False
+    wrote_at = 0.0
+
+    screen_val = predict_screen(screen_curve, last_lux)
+    write_sysfs(SCREEN_BL, screen_val)
+    kbd_val = predict_kbd(kbd_curve, last_lux)
+    write_sysfs(KBD_BL, kbd_val)
+    wrote_at = time.time()
 
     while True:
         try:
+            now = time.time()
             lux = read_sysfs(ALS)
             lux_changed = abs(log_lux(lux) - log_lux(last_lux)) >= LUX_CHANGE
 
-            cur_screen = read_sysfs(SCREEN_BL)
-            if abs(cur_screen - last_screen_set) > SCREEN_MAX * 0.03:
-                snap(screen_curve, lux, cur_screen)
-                save_curve(screen_curve, kbd_curve)
-                screen_locked = True
+            if now - wrote_at > USER_COOLDOWN:
+                cur_screen = read_sysfs(SCREEN_BL)
+                if abs(cur_screen - screen_val) > SCREEN_MAX * 0.05:
+                    snap(screen_curve, lux, cur_screen)
+                    save_curve(screen_curve, kbd_curve)
+                    screen_val = cur_screen
+                    screen_locked = True
 
-            cur_kbd = read_sysfs(KBD_BL)
-            if cur_kbd != last_kbd_set:
-                snap(kbd_curve, lux, cur_kbd)
-                save_curve(screen_curve, kbd_curve)
-                kbd_locked = True
+                cur_kbd = read_sysfs(KBD_BL)
+                if cur_kbd != kbd_val:
+                    snap(kbd_curve, lux, cur_kbd)
+                    save_curve(screen_curve, kbd_curve)
+                    kbd_val = cur_kbd
+                    kbd_locked = True
 
             if lux_changed:
                 screen_locked = False
@@ -140,16 +149,18 @@ def main():
                 last_lux = lux
 
             if not screen_locked:
-                screen = predict_screen(screen_curve, lux)
-                if screen != last_screen_set:
-                    write_sysfs(SCREEN_BL, screen)
-                    last_screen_set = screen
+                new_screen = predict_screen(screen_curve, lux)
+                if new_screen != screen_val:
+                    write_sysfs(SCREEN_BL, new_screen)
+                    screen_val = new_screen
+                    wrote_at = now
 
             if not kbd_locked:
-                kbd = predict_kbd(kbd_curve, lux)
-                if kbd != last_kbd_set:
-                    write_sysfs(KBD_BL, kbd)
-                    last_kbd_set = kbd
+                new_kbd = predict_kbd(kbd_curve, lux)
+                if new_kbd != kbd_val:
+                    write_sysfs(KBD_BL, new_kbd)
+                    kbd_val = new_kbd
+                    wrote_at = now
         except Exception:
             pass
         time.sleep(POLL)

@@ -21,16 +21,16 @@ def lux_to_screen(lux):
     if lux <= 0:
         lux = 1
     t = math.log10(lux)
-    # raw 1000(dark)→target 0.0, raw 300000(bright)→target 0.5
-    return max(0.0, min(0.5, (t - 3.0) / 5.5 * 0.5))
+    # raw 3000(dark)→target 0.0(sysfs 202), raw 200000(bright)→target 0.5(sysfs 400)
+    return max(0.0, min(0.5, (t - 3.5) / 1.8 * 0.5))
 
 
 def lux_to_kbd(lux):
     if lux <= 0:
         lux = 1
     t = math.log10(lux)
-    # raw 1000(dark)→3, raw 200000(bright)→0
-    return max(0, min(KBD_MAX, round(KBD_MAX * (1.0 - (t - 3.0) / 2.3))))
+    # raw 3000(dark)→3, raw 200000(bright)→0
+    return max(0, min(KBD_MAX, round(KBD_MAX * (1.0 - (t - 3.5) / 1.8))))
 
 
 def set_screen(target):

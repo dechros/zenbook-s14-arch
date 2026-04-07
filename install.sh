@@ -23,7 +23,7 @@ rm -rf "$DRIVER_TMP"
 
 echo "=== Installing packages ==="
 sudo pacman -S --needed --noconfirm \
-    python-evdev libgpiod papirus-icon-theme gnome-backgrounds gnome-characters \
+    python-evdev libgpiod papirus-icon-theme gnome-backgrounds gnome-characters gnome-keyring \
     terminus-font powertop iw sof-firmware alsa-ucm-conf github-cli \
     qt5-wayland qt6-wayland inotify-tools \
     vulkan-intel lib32-vulkan-intel vulkan-tools
@@ -120,11 +120,11 @@ sudo chsh -s /usr/bin/zsh "$USERNAME"
 echo "=== Setting up services ==="
 sudo systemctl daemon-reload
 sudo systemctl enable --now powertop
+sudo systemctl enable --now auto-brightness.service
 sudo udevadm control --reload-rules
 sudo udevadm trigger --subsystem-match=power_supply
 systemctl --user daemon-reload
 systemctl --user enable --now gdm-wallpaper-sync.service
-systemctl --user enable --now auto-brightness.service
 
 echo "=== Configuring Wayland for Electron apps ==="
 if ! grep -q '^ELECTRON_OZONE_PLATFORM_HINT' /etc/environment; then

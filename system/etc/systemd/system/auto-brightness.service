@@ -1,7 +1,6 @@
 [Unit]
 Description=Self-learning ambient brightness controller
-After=graphical-session.target
-PartOf=graphical-session.target
+After=multi-user.target
 
 [Service]
 Type=simple
@@ -10,4 +9,4 @@ Restart=always
 RestartSec=5
 
 [Install]
-WantedBy=graphical-session.target
+WantedBy=multi-user.target

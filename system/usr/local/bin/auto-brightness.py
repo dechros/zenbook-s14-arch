@@ -4,13 +4,14 @@ import math
 import os
 import subprocess
 import time
+import glob
 
 ALS = '/sys/bus/iio/devices/iio:device2/in_illuminance_raw'
 SCREEN_BL = '/sys/class/backlight/intel_backlight/brightness'
 SCREEN_MAX = '/sys/class/backlight/intel_backlight/max_brightness'
 KBD_BL = '/sys/class/leds/asus::kbd_backlight/brightness'
 KBD_MAX = '/sys/class/leds/asus::kbd_backlight/max_brightness'
-STATE_DIR = os.path.expanduser('~/.local/state/auto-brightness')
+STATE_DIR = '/var/lib/auto-brightness'
 CURVE_FILE = os.path.join(STATE_DIR, 'curve.json')
 
 POLL_SEC = 2
@@ -107,14 +108,35 @@ def default_kbd(log10_raw):
     return max(0.0, min(1.0, 1.0 - (log10_raw - 3.5) / 1.5))
 
 
+def find_session_bus():
+    try:
+        result = subprocess.run(
+            ['loginctl', 'list-sessions', '--no-legend'],
+            capture_output=True, text=True)
+        for line in result.stdout.strip().split('\n'):
+            parts = line.split()
+            if len(parts) >= 3:
+                uid = parts[1]
+                if int(uid) >= 1000 and os.path.exists(f'/run/user/{uid}/bus'):
+                    return f'unix:path=/run/user/{uid}/bus', uid
+    except Exception:
+        pass
+    return None, None
+
+
 def set_screen_target(target):
+    bus, uid = find_session_bus()
+    if not bus:
+        return
+    env = os.environ.copy()
+    env['DBUS_SESSION_BUS_ADDRESS'] = bus
     subprocess.run([
         'gdbus', 'call', '--session',
         '--dest', 'org.gnome.Shell',
         '--object-path', '/org/gnome/Shell/Brightness',
         '--method', 'org.gnome.Shell.Brightness.SetAutoBrightnessTarget',
         f'{target:.3f}',
-    ], check=False, capture_output=True, timeout=5)
+    ], check=False, capture_output=True, timeout=5, env=env)
 
 
 def set_kbd_level(level):
@@ -152,14 +174,12 @@ def main():
                 save_state(screen_curve, kbd_curve, cal)
                 user_change_until = now + USER_COOLDOWN
                 last_screen_set = cur_screen
-                print(f'learn screen: lux={raw} val={cur_screen}/{screen_max}', flush=True)
 
             if abs(kbd_user_delta) >= 1:
                 snap(kbd_curve, raw, cur_kbd / kbd_max)
                 save_state(screen_curve, kbd_curve, cal)
                 user_change_until = now + USER_COOLDOWN
                 last_kbd_set = cur_kbd
-                print(f'learn kbd: lux={raw} val={cur_kbd}/{kbd_max}', flush=True)
 
             if now >= user_change_until:
                 lx_change = abs(log_lux(raw) - log_lux(last_raw))

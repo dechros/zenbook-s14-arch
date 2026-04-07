@@ -9,6 +9,7 @@ if [[ "${1:-}" == "monitors" ]]; then
     exit 0
 fi
 
+install -d -o gdm -g gdm -m 700 /var/lib/gdm/.cache/dconf
 mkdir -p /etc/dconf/db/gdm.d
 TMP=$(mktemp)
 trap "rm -f $TMP" EXIT

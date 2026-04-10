@@ -1,13 +1,13 @@
 # pacman
 python-evdev
 libgpiod
+papirus-icon-theme
 terminus-font
 powertop
 iw
 sof-firmware
 alsa-ucm-conf
-gnome-backgrounds
-gnome-characters
+github-cli
 qt5-wayland
 qt6-wayland
 inotify-tools

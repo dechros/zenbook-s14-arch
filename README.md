@@ -1,6 +1,6 @@
 # zenbook-s14-arch
 
-Post-install configuration for ASUS Zenbook S14 UX5406SA running Arch Linux with GNOME.
+Post-install configuration for ASUS Zenbook S14 UX5406SA running Arch Linux.
 
 ## Hardware
 
@@ -13,21 +13,19 @@ Post-install configuration for ASUS Zenbook S14 UX5406SA running Arch Linux with
 ## What this does
 
 - Hotkey handler service: mic mute LED, camera toggle, Copilot key (F23) launches Claude Code
-- Hotkey resume service: restores GPIO LED state after suspend/wake
 - Auto keyboard backlight: inversely tracks screen brightness (dark env → keyboard LED on)
+- Power profile auto-switch: performance on AC, balanced on battery
 - System locale: English UI, Turkish date/time/currency formats, Turkish keyboard
-- systemd-boot: `console-mode max` for HiDPI display
 - Console font: Terminus 32px
 - Power: powertop auto-tune, WiFi power save disabled
 - Browser: Google Chrome
-- Icons: Papirus, custom white Arch Linux SVG icons
+- Icons: Papirus, custom white Arch Linux SVG icon
 - Cursor: Bibata-Modern-Classic
-- Window buttons: minimize + maximize + close
 - Shell: ZSH + oh-my-zsh + Powerlevel10k
 
 ## Drivers
 
-Installs firmware files from [dantmnf/zenbook-s14-linux](https://github.com/dantmnf/zenbook-s14-linux) for:
+Installs firmware files from [dantmnf/zenbook-s14-linux](https://github.com/dantmnf/zenbook-s14-linux):
 
 - ISH firmware (`ish_lnlm_ef534c00_fb3b8d86.bin`) -- required for sensor hub
 

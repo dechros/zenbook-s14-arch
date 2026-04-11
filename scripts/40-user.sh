@@ -13,11 +13,13 @@ echo "=== Copying user config files ==="
 mkdir -p "$USER_HOME/.config" \
     "$USER_HOME/.local/share/icons" \
     "$USER_HOME/.local/share/konsole" \
-    "$USER_HOME/.local/bin"
+    "$USER_HOME/.local/bin" \
+    "$USER_HOME/Pictures/Wallpapers"
 cp -r "$REPO_DIR/user/.config/"* "$USER_HOME/.config/"
 cp "$REPO_DIR/user/.local/share/icons/"* "$USER_HOME/.local/share/icons/"
 cp "$REPO_DIR/user/.local/share/konsole/"* "$USER_HOME/.local/share/konsole/"
 install -m 755 "$REPO_DIR/user/.local/bin/"* "$USER_HOME/.local/bin/"
+cp "$REPO_DIR/user/Pictures/Wallpapers/"* "$USER_HOME/Pictures/Wallpapers/"
 cp "$REPO_DIR/user/home/.zshrc" "$USER_HOME/.zshrc"
 cp "$REPO_DIR/user/home/.p10k.zsh" "$USER_HOME/.p10k.zsh"
 

@@ -1,1 +1,0 @@
-SUBSYSTEM=="power_supply", KERNEL=="A*", ATTR{type}=="Mains", TAG+="systemd", ENV{SYSTEMD_WANTS}+="power-profile-ac.service"

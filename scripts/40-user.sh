@@ -23,5 +23,12 @@ cp "$REPO_DIR/user/Pictures/Wallpapers/"* "$USER_HOME/Pictures/Wallpapers/"
 cp "$REPO_DIR/user/home/.zshrc" "$USER_HOME/.zshrc"
 cp "$REPO_DIR/user/home/.p10k.zsh" "$USER_HOME/.p10k.zsh"
 
+echo "=== Installing arch-power-switch plasmoid ==="
+TMP=$(mktemp -d)
+git clone --depth=1 https://github.com/dechros/arch-power-switch.git "$TMP/aps"
+kpackagetool6 -t Plasma/Applet -i "$TMP/aps/package" 2>/dev/null || \
+    kpackagetool6 -t Plasma/Applet -u "$TMP/aps/package"
+rm -rf "$TMP"
+
 echo "=== Switching default shell to zsh ==="
 sudo chsh -s /usr/bin/zsh "$USERNAME"

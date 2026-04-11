@@ -14,27 +14,22 @@ LUX_CHANGE = 0.15
 DBUS_BUS = 'unix:path=/run/user/1000/bus'
 DBUS_ENV = {**os.environ, 'DBUS_SESSION_BUS_ADDRESS': DBUS_BUS}
 
-
 def read_sysfs(path):
     with open(path) as f:
         return int(f.read().strip())
 
-
 def log_lux(lux):
     return math.log10(max(lux, 1))
-
 
 def lux_to_screen(lux):
     t = log_lux(lux)
     frac = max(0.0, min(1.0, (t - 3.5) / 1.8))
     return round(SCREEN_MIN + frac * (SCREEN_MAX - SCREEN_MIN))
 
-
 def lux_to_kbd(lux):
     t = log_lux(lux)
     frac = 1.0 - (t - 3.5) / 1.8
     return max(0, min(KBD_MAX, round(frac * KBD_MAX)))
-
 
 def gdbus(method, *args):
     subprocess.run(
@@ -44,7 +39,6 @@ def gdbus(method, *args):
          '--object-path', '/org/gnome/Mutter/DisplayConfig',
          '--method', method] + list(args),
         env=DBUS_ENV, capture_output=True, timeout=5)
-
 
 def get_serial():
     r = subprocess.run(
@@ -59,13 +53,11 @@ def get_serial():
         return r.stdout.split('uint32 ')[1].split(',')[0]
     return None
 
-
 def set_screen(val):
     serial = get_serial()
     if serial:
         gdbus('org.gnome.Mutter.DisplayConfig.SetBacklight',
               serial, 'eDP-1', str(val))
-
 
 def set_kbd(val):
     try:
@@ -73,7 +65,6 @@ def set_kbd(val):
             f.write(str(val))
     except Exception:
         pass
-
 
 def disable_shell_auto():
     subprocess.run(
@@ -84,7 +75,6 @@ def disable_shell_auto():
          '--method', 'org.gnome.Shell.Brightness.SetAutoBrightnessTarget',
          '--', '-1.0'],
         env=DBUS_ENV, capture_output=True, timeout=5)
-
 
 def main():
     disable_shell_auto()
@@ -106,7 +96,6 @@ def main():
         except Exception:
             pass
         time.sleep(POLL)
-
 
 if __name__ == '__main__':
     main()

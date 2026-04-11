@@ -5,8 +5,22 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
+# PATH: user + common language toolchain bins
+typeset -U path PATH
+path=(
+  $HOME/bin
+  $HOME/.local/bin
+  $HOME/.cargo/bin
+  $HOME/.npm-global/bin
+  $HOME/go/bin
+  $HOME/.yarn/bin
+  /usr/local/sbin
+  /usr/local/bin
+  /usr/bin
+  /bin
+  $path
+)
+export PATH
 
 # Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"

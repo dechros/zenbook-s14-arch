@@ -11,6 +11,10 @@ if [[ -d "$REPO_DIR/system/boot" && -d /boot/loader ]]; then
     sudo cp -r "$REPO_DIR/system/boot/"* /boot/
 fi
 
+if [[ -f /usr/share/alsa/ucm2/sof-soundwire/dmic.conf ]]; then
+    sudo sed -i 's/"Digital Microphone"/"Microphone"/' /usr/share/alsa/ucm2/sof-soundwire/dmic.conf
+fi
+
 echo "=== Enabling system services ==="
 sudo systemctl daemon-reload
 sudo systemctl enable --now powertop.service

@@ -28,7 +28,7 @@ sudo pacman -S --needed --noconfirm \
     qt5-wayland qt6-wayland inotify-tools \
     vulkan-intel lib32-vulkan-intel vulkan-tools \
     plasma-nm plasma-pa kscreen bluedevil kde-gtk-config breeze-gtk \
-    plasma-systemmonitor wireless-regdb \
+    plasma-systemmonitor spectacle wireless-regdb \
     openssh usbutils zsh zsh-completions ttf-meslo-nerd \
     jq tree unzip zip p7zip rsync tmux fzf ripgrep fd bat eza
 
@@ -77,15 +77,21 @@ sudo systemctl enable --now auto-brightness.service
 sudo udevadm control --reload-rules
 sudo udevadm trigger --subsystem-match=power_supply
 
-echo "=== Configuring Wayland for Electron apps ==="
+echo "=== Configuring environment ==="
 if ! grep -q '^ELECTRON_OZONE_PLATFORM_HINT' /etc/environment; then
     echo 'ELECTRON_OZONE_PLATFORM_HINT=auto' | sudo tee -a /etc/environment
+fi
+if ! grep -q '^SHELL=' /etc/environment; then
+    echo 'SHELL=/usr/bin/zsh' | sudo tee -a /etc/environment
 fi
 
 echo "=== Setting locale ==="
 sudo sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
 sudo sed -i 's/^#tr_TR.UTF-8 UTF-8/tr_TR.UTF-8 UTF-8/' /etc/locale.gen
 sudo locale-gen
+
+echo "=== Applying KDE color scheme (Breeze Dark) ==="
+plasma-apply-colorscheme BreezeDark || true
 
 if [[ -n "$WAYLAND_DISPLAY" ]]; then
     echo "=== Applying display settings (2880x1800@120, scale 1.75) ==="

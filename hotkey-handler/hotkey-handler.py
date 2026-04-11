@@ -157,7 +157,7 @@ def main():
                                 meta_held = True
                                 meta_pending = True
                                 meta_swallowed = False
-                            else:
+                            elif val == 0:
                                 if meta_pending:
                                     virt_kbd.write(evdev.ecodes.EV_KEY, evdev.ecodes.KEY_LEFTMETA, 1)
                                     virt_kbd.syn()

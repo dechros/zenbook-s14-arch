@@ -7,9 +7,6 @@ sudo cp -r "$REPO_DIR/system/etc/"* /etc/
 sudo install -m 755 "$REPO_DIR/system/usr/local/bin/auto-brightness.py" \
     /usr/local/bin/auto-brightness.py
 
-echo "=== Updating hwdb (keyboard remap) ==="
-sudo systemd-hwdb update
-
 echo "=== Enabling system services ==="
 sudo systemctl daemon-reload
 sudo systemctl enable --now powertop.service

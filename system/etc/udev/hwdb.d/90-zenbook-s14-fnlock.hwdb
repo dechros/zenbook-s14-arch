@@ -1,7 +1,0 @@
-evdev:atkbd:dmi:bvn*:bvr*:bd*:svnASUSTeK*:pn*UX5406SA*:*
- KEYBOARD_KEY_3b=mute
- KEYBOARD_KEY_3c=volumedown
- KEYBOARD_KEY_3d=volumeup
- KEYBOARD_KEY_a0=f1
- KEYBOARD_KEY_ae=f2
- KEYBOARD_KEY_b0=f3

@@ -5,7 +5,6 @@ from gpiod.line import Direction, Value
 import glob
 import os
 import select
-import time
 import subprocess
 
 CAMERA_BIND       = '/sys/bus/usb/drivers/usb/bind'
@@ -101,7 +100,9 @@ def toggle_claude():
     run_as_user(['/usr/local/bin/toggle-claude.sh'])
 
 def launch_emoji():
-    run_as_user(['/usr/local/bin/launch-emoji.sh'])
+    run_as_user(['qdbus6', 'org.kde.kglobalaccel',
+                 '/component/org_kde_plasma_emojier_desktop',
+                 'org.kde.kglobalaccel.Component.invokeShortcut', '_launch'])
 
 def show_osd(icon, label):
     run_as_user(['qdbus6', 'org.kde.plasmashell', '/org/kde/osdService',
@@ -120,26 +121,61 @@ def main():
 
     dev_wmi = find_device('Asus WMI hotkeys')
     dev_kbd = find_device('AT Translated Set 2 keyboard')
+    dev_kbd.grab()
+    caps = dev_kbd.capabilities()
+    caps.pop(evdev.ecodes.EV_SYN, None)
+    virt_kbd = evdev.UInput(caps, name='hotkey-handler-virtual-kbd')
     devices = {dev_wmi.fd: dev_wmi, dev_kbd.fd: dev_kbd}
     meta_held = False
+    meta_pending = False
+    meta_swallowed = False
 
     while True:
         r, _, _ = select.select(devices.keys(), [], [])
         for fd in r:
             for event in devices[fd].read():
-                if event.type != evdev.ecodes.EV_KEY:
+                if fd == dev_kbd.fd:
+                    if event.type == evdev.ecodes.EV_KEY:
+                        code = event.code
+                        val = event.value
+
+                        if code == evdev.ecodes.KEY_LEFTMETA:
+                            if val == 1:
+                                meta_held = True
+                                meta_pending = True
+                                meta_swallowed = False
+                            else:
+                                if meta_pending:
+                                    virt_kbd.write(evdev.ecodes.EV_KEY, evdev.ecodes.KEY_LEFTMETA, 1)
+                                    virt_kbd.syn()
+                                    meta_pending = False
+                                if not meta_swallowed:
+                                    virt_kbd.write_event(event)
+                                meta_held = False
+                                meta_swallowed = False
+                            continue
+
+                        if code == evdev.ecodes.KEY_DOT and meta_held:
+                            if val == 1 and user_logged_in():
+                                launch_emoji()
+                            meta_pending = False
+                            meta_swallowed = True
+                            continue
+
+                        if code == evdev.ecodes.KEY_F23:
+                            if val == 1 and user_logged_in():
+                                toggle_claude()
+                            continue
+
+                        if meta_pending and val == 1:
+                            virt_kbd.write(evdev.ecodes.EV_KEY, evdev.ecodes.KEY_LEFTMETA, 1)
+                            virt_kbd.syn()
+                            meta_pending = False
+
+                    virt_kbd.write_event(event)
                     continue
 
-                if fd == dev_kbd.fd:
-                    if event.code == evdev.ecodes.KEY_LEFTMETA:
-                        meta_held = event.value != 0
-                        continue
-                    if event.code == evdev.ecodes.KEY_F23 and event.value == 1:
-                        if user_logged_in():
-                            toggle_claude()
-                    elif event.code == evdev.ecodes.KEY_P and event.value == 1 and meta_held:
-                        if user_logged_in():
-                            launch_emoji()
+                if event.type != evdev.ecodes.EV_KEY:
                     continue
 
                 if event.value != 1:
@@ -156,11 +192,8 @@ def main():
                         cled.set_value(GPIO_CLED, Value.ACTIVE)
                     save_state(camera_enabled)
                     if user_logged_in():
-                        show_osd('camera-on' if camera_enabled else 'camera-off', 'Built-in Camera')
-
-                elif event.code == evdev.ecodes.KEY_F23:
-                    if user_logged_in():
-                        toggle_claude()
+                        show_osd('camera-on' if camera_enabled else 'camera-off',
+                                 'Camera On' if camera_enabled else 'Camera Off')
 
 if __name__ == '__main__':
     main()

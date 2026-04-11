@@ -43,6 +43,7 @@ echo "=== Installing packages (AUR via yay) ==="
 yay -S --needed --noconfirm \
     google-chrome \
     visual-studio-code-bin \
+    octopi \
     bibata-cursor-theme-bin \
     bibata-cursor-gruvbox-git \
     gruvbox-plus-icon-theme-git \

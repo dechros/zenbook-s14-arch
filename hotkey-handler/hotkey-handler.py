@@ -113,6 +113,10 @@ def launch_display_osd():
                  '/org/kde/kscreen/osdService '
                  'org.kde.kscreen.osdService.hideOsd'])
 
+def launch_krunner():
+    run_as_user(['qdbus6', 'org.kde.krunner', '/App',
+                 'org.kde.krunner.App.display'])
+
 def show_osd(icon, label):
     run_as_user(['qdbus6', 'org.kde.plasmashell', '/org/kde/osdService',
                  'org.kde.osdService.showText', icon, label])
@@ -174,6 +178,13 @@ def main():
                         if code == evdev.ecodes.KEY_P and meta_held:
                             if val == 1 and user_logged_in():
                                 launch_display_osd()
+                            meta_pending = False
+                            meta_swallowed = True
+                            continue
+
+                        if code == evdev.ecodes.KEY_F and meta_held:
+                            if val == 1 and user_logged_in():
+                                launch_krunner()
                             meta_pending = False
                             meta_swallowed = True
                             continue

@@ -29,15 +29,16 @@ Post-install configuration for ASUS Zenbook S14 (UX5406SA) on Arch Linux with KD
   - Copilot key (F23) launches, focuses, minimizes or restores Claude Code in Konsole
   - Fn+F7 opens the KScreen display configuration OSD and auto-hides after 3 seconds
   - Fn+F8 opens the Plasma emoji selector
-  - Meta+P and Meta+. are consumed so they do not leak to focused apps
+  - Meta+F opens KRunner
+  - Meta+P, Meta+. and Meta+F are consumed so they do not leak to focused apps
 
 ## Layout
 
 ```
 install.sh              main entry, runs scripts/* in order
 packages.txt            reference package list
-scripts/                install phases (firmware, packages, system, user, env, display)
-hotkey-handler/         self-contained systemd service
+scripts/                install phases (firmware, packages, system, hotkey, user, env, display)
+hotkey-handler/         source for the hotkey systemd service
 system/                 files copied to /
 user/                   files copied to $HOME
 ```

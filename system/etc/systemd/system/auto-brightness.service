@@ -1,5 +1,5 @@
 [Unit]
-Description=Self-learning ambient brightness controller
+Description=Keyboard backlight inverse to screen brightness
 After=multi-user.target
 
 [Service]

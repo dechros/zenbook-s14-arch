@@ -21,7 +21,7 @@ DialogHeight=630
 DialogWidth=810
 
 [Containments][1][Wallpaper][org.kde.image][General]
-Image=file:///home/dechros/.local/share/wallpapers/WhiteSur/
+Image=file:///home/dechros/.local/share/wallpapers/Otto/
 SlidePaths=/home/dechros/.local/share/wallpapers/,/usr/share/wallpapers/
 
 [Containments][2]
@@ -32,21 +32,6 @@ lastScreen=0
 location=4
 plugin=org.kde.panel
 wallpaperplugin=org.kde.image
-
-[Containments][2][Applets][4]
-immutability=1
-plugin=org.kde.plasma.pager
-
-[Containments][2][Applets][46]
-immutability=1
-plugin=org.kde.plasma.kickoff
-
-[Containments][2][Applets][46][Configuration]
-popupHeight=509
-popupWidth=647
-
-[Containments][2][Applets][46][Configuration][General]
-favoritesPortedToKAstats=true
 
 [Containments][2][Applets][48]
 immutability=1
@@ -59,8 +44,27 @@ plugin=org.kde.plasma.icontasks
 [Containments][2][Applets][5][Configuration][General]
 launchers=preferred://filemanager,applications:google-chrome.desktop,applications:org.kde.konsole.desktop,applications:systemsettings.desktop
 
+[Containments][2][Applets][59]
+immutability=1
+plugin=org.kde.plasma.kickerdash
+
+[Containments][2][Applets][59][Configuration]
+popupHeight=509
+popupWidth=647
+
+[Containments][2][Applets][59][Configuration][ConfigDialog]
+DialogHeight=630
+DialogWidth=810
+
+[Containments][2][Applets][59][Configuration][General]
+customButtonImage=show-grid
+favoritesPortedToKAstats=true
+showRecentApps=false
+showRecentDocs=false
+useCustomButtonImage=true
+
 [Containments][2][General]
-AppletOrder=46;4;5;48
+AppletOrder=59;5;48
 
 [Containments][20]
 activityId=
@@ -94,7 +98,7 @@ customDateFormat=dddd d
 dateDisplayFormat=BesideTime
 dateFormat=custom
 fontFamily=Noto Sans
-fontSize=7
+fontSize=6
 fontStyleName=Bold
 fontWeight=700
 use24hFormat=2
@@ -114,7 +118,7 @@ popupWidth=432
 [Containments][20][Applets][24][Configuration][Appearance]
 altTxt=Arch Linux
 isBold=true
-lastSpace=2
+midSpace=6
 txt=%a\s
 visible=false
 
@@ -198,6 +202,25 @@ plugin=org.kde.plasma.bluetooth
 immutability=1
 plugin=org.kde.plasma.weather
 
+[Containments][20][Applets][27][Applets][49][Configuration][Appearance]
+showHumidityInTooltip=false
+showWindInTooltip=false
+
+[Containments][20][Applets][27][Applets][49][Configuration][ConfigDialog]
+DialogHeight=630
+DialogWidth=810
+
+[Containments][20][Applets][27][Applets][49][Configuration][Units]
+pressureUnit=5029
+speedUnit=9001
+temperatureUnit=6001
+visibilityUnit=2007
+
+[Containments][20][Applets][27][Applets][49][Configuration][WeatherStation]
+placeDisplayName=Ankara, Turkey, TR
+placeInfo=Ankara, Turkey, TR|323786
+provider=bbcukmet
+
 [Containments][20][Applets][27][Applets][50]
 immutability=1
 plugin=org.kde.plasma.keyboardindicator
@@ -209,14 +232,6 @@ plugin=org.kde.plasma.mediacontroller
 [Containments][20][Applets][27][General]
 extraItems=org.kde.plasma.devicenotifier,org.kde.plasma.keyboardlayout,org.kde.plasma.mediacontroller,org.kde.plasma.brightness,org.kde.plasma.volume,org.kde.plasma.battery,org.kde.plasma.notifications,org.kde.plasma.bluetooth,org.kde.plasma.cameraindicator,org.kde.plasma.clipboard,org.kde.plasma.manage-inputmethod,org.kde.kscreen,org.kde.plasma.networkmanagement,org.kde.plasma.weather,org.kde.plasma.keyboardindicator
 knownItems=org.kde.plasma.devicenotifier,org.kde.plasma.keyboardlayout,org.kde.plasma.mediacontroller,org.kde.plasma.brightness,org.kde.plasma.volume,org.kde.plasma.battery,org.kde.plasma.notifications,org.kde.plasma.bluetooth,org.kde.plasma.cameraindicator,org.kde.plasma.clipboard,org.kde.plasma.manage-inputmethod,org.kde.kscreen,org.kde.plasma.networkmanagement,org.kde.plasma.weather,org.kde.plasma.keyboardindicator
-
-[Containments][20][Applets][44]
-immutability=1
-plugin=org.kde.plasma.notifications
-
-[Containments][20][Applets][44][Configuration]
-popupHeight=433
-popupWidth=324
 
 [Containments][20][Applets][55]
 immutability=1
@@ -242,8 +257,25 @@ showHoverBg=false
 showTooltip=false
 singleClickAction=Disabled,Disabled
 
+[Containments][20][Applets][58]
+immutability=1
+plugin=org.kde.plasma.shutdownorswitch
+
+[Containments][20][Applets][58][Configuration]
+popupHeight=205
+popupWidth=216
+
+[Containments][20][Applets][58][Configuration][ConfigDialog]
+DialogHeight=630
+DialogWidth=810
+
+[Containments][20][Applets][58][Configuration][General]
+icon=/home/dechros/.local/share/icons/arch-white.svg
+showHibernate=true
+showSuspend=true
+
 [Containments][20][General]
-AppletOrder=24;21;55;27;23;44;26
+AppletOrder=58;24;21;55;27;23;26
 
 [ScreenMapping]
 itemsOnDisabledScreens=

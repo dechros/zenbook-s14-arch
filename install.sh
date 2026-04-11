@@ -26,7 +26,11 @@ sudo pacman -S --needed --noconfirm \
     python-evdev libgpiod papirus-icon-theme \
     terminus-font powertop iw sof-firmware alsa-ucm-conf github-cli \
     qt5-wayland qt6-wayland inotify-tools \
-    vulkan-intel lib32-vulkan-intel vulkan-tools
+    vulkan-intel lib32-vulkan-intel vulkan-tools \
+    plasma-nm plasma-pa kscreen bluedevil kde-gtk-config breeze-gtk \
+    plasma-systemmonitor wireless-regdb \
+    openssh usbutils zsh zsh-completions ttf-meslo-nerd \
+    jq tree unzip zip p7zip rsync tmux fzf ripgrep fd bat eza
 
 if ! command -v yay &>/dev/null; then
     echo "=== Installing yay ==="
@@ -37,7 +41,7 @@ if ! command -v yay &>/dev/null; then
 fi
 
 yay -S --needed --noconfirm google-chrome bibata-cursor-theme-bin \
-    ttf-meslo-nerd-font-powerlevel10k zsh-theme-powerlevel10k
+    zsh-theme-powerlevel10k
 
 echo "=== Copying system files ==="
 sudo cp -r "$REPO_DIR/system/etc/"* /etc/
@@ -56,9 +60,10 @@ if [[ ! -d "$USER_HOME/.oh-my-zsh" ]]; then
 fi
 
 echo "=== Copying user config files ==="
-mkdir -p "$USER_HOME/.config" "$USER_HOME/.local/share/icons"
+mkdir -p "$USER_HOME/.config" "$USER_HOME/.local/share/icons" "$USER_HOME/.local/share/konsole"
 cp -r "$REPO_DIR/user/.config/"* "$USER_HOME/.config/"
 cp "$REPO_DIR/user/.local/share/icons/"* "$USER_HOME/.local/share/icons/"
+cp "$REPO_DIR/user/.local/share/konsole/"* "$USER_HOME/.local/share/konsole/"
 
 cp "$REPO_DIR/user/home/.zshrc" "$USER_HOME/.zshrc"
 cp "$REPO_DIR/user/home/.p10k.zsh" "$USER_HOME/.p10k.zsh"

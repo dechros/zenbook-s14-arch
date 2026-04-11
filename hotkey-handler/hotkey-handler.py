@@ -104,6 +104,15 @@ def launch_emoji():
                  '/component/org_kde_plasma_emojier_desktop',
                  'org.kde.kglobalaccel.Component.invokeShortcut', '_launch'])
 
+def launch_display_osd():
+    run_as_user(['qdbus6', 'org.kde.kscreen.osdService',
+                 '/org/kde/kscreen/osdService',
+                 'org.kde.kscreen.osdService.showActionSelector'])
+    run_as_user(['sh', '-c',
+                 'sleep 3; qdbus6 org.kde.kscreen.osdService '
+                 '/org/kde/kscreen/osdService '
+                 'org.kde.kscreen.osdService.hideOsd'])
+
 def show_osd(icon, label):
     run_as_user(['qdbus6', 'org.kde.plasmashell', '/org/kde/osdService',
                  'org.kde.osdService.showText', icon, label])
@@ -158,6 +167,13 @@ def main():
                         if code == evdev.ecodes.KEY_DOT and meta_held:
                             if val == 1 and user_logged_in():
                                 launch_emoji()
+                            meta_pending = False
+                            meta_swallowed = True
+                            continue
+
+                        if code == evdev.ecodes.KEY_P and meta_held:
+                            if val == 1 and user_logged_in():
+                                launch_display_osd()
                             meta_pending = False
                             meta_swallowed = True
                             continue

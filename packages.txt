@@ -1,22 +1,52 @@
-# pacman
+# pacman — drivers & hardware
 python-evdev
 libgpiod
-papirus-icon-theme
-terminus-font
 powertop
 iw
 sof-firmware
 alsa-ucm-conf
-github-cli
-qt5-wayland
-qt6-wayland
-inotify-tools
 vulkan-intel
 lib32-vulkan-intel
 vulkan-tools
+wireless-regdb
+usbutils
+
+# pacman — KDE Plasma integration (system tray, display, BT, GTK)
+plasma-nm
+plasma-pa
+kscreen
+bluedevil
+kde-gtk-config
+breeze-gtk
+plasma-systemmonitor
+
+# pacman — Wayland / desktop
+qt5-wayland
+qt6-wayland
+inotify-tools
+papirus-icon-theme
+terminus-font
+
+# pacman — shell & CLI basics
+openssh
+zsh
+zsh-completions
+ttf-meslo-nerd
+github-cli
+jq
+tree
+unzip
+zip
+p7zip
+rsync
+tmux
+fzf
+ripgrep
+fd
+bat
+eza
 
 # AUR (yay)
 google-chrome
 bibata-cursor-theme-bin
-ttf-meslo-nerd-font-powerlevel10k
 zsh-theme-powerlevel10k

@@ -45,14 +45,10 @@ yay -S --needed --noconfirm google-chrome bibata-cursor-theme-bin \
 
 echo "=== Copying system files ==="
 sudo cp -r "$REPO_DIR/system/etc/"* /etc/
-sudo install -m 755 "$REPO_DIR/system/usr/local/bin/power-profile-ac.sh" /usr/local/bin/power-profile-ac.sh
 sudo install -m 755 "$REPO_DIR/system/usr/local/bin/auto-brightness.py" /usr/local/bin/auto-brightness.py
 
 echo "=== Installing hotkey handler ==="
-if [[ ! -d "$USER_HOME/dev/hotkey-handler" ]]; then
-    git clone --depth=1 https://github.com/dechros/hotkey-handler.git "$USER_HOME/dev/hotkey-handler"
-fi
-"$USER_HOME/dev/hotkey-handler/install.sh"
+"$REPO_DIR/hotkey-handler/install.sh"
 
 echo "=== Installing oh-my-zsh ==="
 if [[ ! -d "$USER_HOME/.oh-my-zsh" ]]; then
@@ -75,7 +71,7 @@ sudo systemctl daemon-reload
 sudo systemctl enable --now powertop
 sudo systemctl enable --now auto-brightness.service
 sudo udevadm control --reload-rules
-sudo udevadm trigger --subsystem-match=power_supply
+sudo udevadm trigger
 
 echo "=== Configuring environment ==="
 if ! grep -q '^ELECTRON_OZONE_PLATFORM_HINT' /etc/environment; then

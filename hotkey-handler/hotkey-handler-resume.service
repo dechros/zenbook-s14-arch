@@ -1,0 +1,10 @@
+[Unit]
+Description=Restart Hotkey Handler after resume
+After=suspend.target hibernate.target hybrid-sleep.target suspend-then-hibernate.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/systemctl restart hotkey-handler.service
+
+[Install]
+WantedBy=suspend.target hibernate.target hybrid-sleep.target suspend-then-hibernate.target

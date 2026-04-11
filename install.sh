@@ -30,8 +30,7 @@ sudo pacman -S --needed --noconfirm \
     plasma-nm plasma-pa kscreen bluedevil kde-gtk-config breeze-gtk \
     plasma-systemmonitor spectacle wireless-regdb \
     openssh usbutils zsh zsh-completions ttf-meslo-nerd \
-    jq tree unzip zip p7zip rsync tmux fzf ripgrep fd bat eza \
-    wofi wtype wl-clipboard
+    jq tree unzip zip p7zip rsync tmux fzf ripgrep fd bat eza
 
 if ! command -v yay &>/dev/null; then
     echo "=== Installing yay ==="

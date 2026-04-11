@@ -21,4 +21,7 @@ fi
 
 echo "=== Installing packages (AUR via yay) ==="
 yay -S --needed --noconfirm google-chrome bibata-cursor-theme-bin \
-    zsh-theme-powerlevel10k plasma6-applets-window-title
+    zsh-theme-powerlevel10k \
+    plasma6-applets-window-title \
+    plasma6-applets-separator-git \
+    plasma6-applets-panel-spacer-extended

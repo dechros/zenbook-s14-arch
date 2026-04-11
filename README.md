@@ -1,33 +1,46 @@
 # zenbook-s14-arch
 
-Post-install configuration for ASUS Zenbook S14 UX5406SA running Arch Linux.
+Post-install configuration for ASUS Zenbook S14 (UX5406SA) on Arch Linux with KDE Plasma Wayland.
 
 ## Hardware
 
 - CPU: Intel Core Ultra 7 258V (Lunar Lake)
-- GPU: Intel Arc Graphics 140V
-- Display: 2880x1800 OLED, 120Hz
-- Audio: CS35L56 / CS42L43 / DMIC on SoundWire
-- WiFi/BT: Intel BE201
+- GPU: Intel Arc Graphics 140V (xe driver)
+- Display: 2880x1800 OLED 120Hz
+- Audio: CS35L56 / CS42L43 / DMIC via SoundWire
+- WiFi/BT: Intel BE201 Wi-Fi 7
+- NPU: Intel VPU
 
-## What this does
+## What it configures
 
-- Hotkey handler service: mic mute LED, camera toggle, Copilot key (F23) launches Claude Code
-- Auto keyboard backlight: inversely tracks screen brightness (dark env → keyboard LED on)
-- Power profile auto-switch: performance on AC, balanced on battery
-- System locale: English UI, Turkish date/time/currency formats, Turkish keyboard
-- Console font: Terminus 32px
-- Power: powertop auto-tune, WiFi power save disabled
-- Browser: Google Chrome
-- Icons: Papirus, custom white Arch Linux SVG icon
-- Cursor: Bibata-Modern-Classic
-- Shell: ZSH + oh-my-zsh + Powerlevel10k
+- ISH firmware from [dantmnf/zenbook-s14-linux](https://github.com/dantmnf/zenbook-s14-linux) for sensor hub and Fn keys
+- `wireless-regdb` so Wi-Fi 7 6 GHz band is usable
+- KDE Plasma tray, display, Bluetooth, GTK theme and Window Title applet
+- Konsole profile with MesloLGS Nerd Font 10pt and a dark colorscheme
+- Zsh, oh-my-zsh and Powerlevel10k; PATH includes language toolchain bins
+- Chrome flags for Wayland and `--password-store=basic` (KWallet disabled)
+- Electron Wayland hint and system default shell via `/etc/environment`
+- Locale: English UI with Turkish date, time and currency formats
+- Auto keyboard backlight that inversely tracks screen brightness
+- powertop auto-tune, USB HID autosuspend disabled
+- KDE BreezeDark color scheme, 2880x1800 @120 Hz with 175% scale
+- Hotkey handler service (see `hotkey-handler/`):
+  - Camera key toggles USB bind with GPIO LED and an OSD
+  - Copilot key (F23) launches, focuses, minimizes or restores Claude Code in Konsole
+  - Fn+F7 opens the KScreen display configuration OSD and auto-hides after 3 seconds
+  - Fn+F8 opens the Plasma emoji selector
+  - Meta+P and Meta+. are consumed so they do not leak to focused apps
 
-## Drivers
+## Layout
 
-Installs firmware files from [dantmnf/zenbook-s14-linux](https://github.com/dantmnf/zenbook-s14-linux):
-
-- ISH firmware (`ish_lnlm_ef534c00_fb3b8d86.bin`) -- required for sensor hub
+```
+install.sh              main entry, runs scripts/* in order
+packages.txt            reference package list
+scripts/                install phases (firmware, packages, system, user, env, display)
+hotkey-handler/         self-contained systemd service
+system/                 files copied to /
+user/                   files copied to $HOME
+```
 
 ## Install
 
@@ -36,3 +49,5 @@ git clone https://github.com/dechros/zenbook-s14-arch.git
 cd zenbook-s14-arch
 ./install.sh
 ```
+
+Reboot when finished.

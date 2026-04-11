@@ -100,6 +100,9 @@ def run_as_user(cmd):
 def toggle_claude():
     run_as_user(['/usr/local/bin/toggle-claude.sh'])
 
+def launch_emoji():
+    run_as_user(['/usr/local/bin/launch-emoji.sh'])
+
 def show_osd(icon, label):
     run_as_user(['qdbus6', 'org.kde.plasmashell', '/org/kde/osdService',
                  'org.kde.osdService.showText', icon, label])
@@ -118,6 +121,7 @@ def main():
     dev_wmi = find_device('Asus WMI hotkeys')
     dev_kbd = find_device('AT Translated Set 2 keyboard')
     devices = {dev_wmi.fd: dev_wmi, dev_kbd.fd: dev_kbd}
+    meta_held = False
 
     while True:
         r, _, _ = select.select(devices.keys(), [], [])
@@ -127,9 +131,15 @@ def main():
                     continue
 
                 if fd == dev_kbd.fd:
+                    if event.code == evdev.ecodes.KEY_LEFTMETA:
+                        meta_held = event.value != 0
+                        continue
                     if event.code == evdev.ecodes.KEY_F23 and event.value == 1:
                         if user_logged_in():
                             toggle_claude()
+                    elif event.code == evdev.ecodes.KEY_P and event.value == 1 and meta_held:
+                        if user_logged_in():
+                            launch_emoji()
                     continue
 
                 if event.value != 1:

@@ -24,9 +24,9 @@ sudo pacman -S --needed --noconfirm git \
     power-profiles-daemon \
     openssh usbutils zsh zsh-completions ttf-meslo-nerd \
     zsh-autosuggestions zsh-syntax-highlighting zsh-history-substring-search \
-    firefox github-cli gwenview haruna \
+    github-cli gwenview haruna \
     jq tree unzip zip 7zip rsync tmux fzf ripgrep fd bat eza wget \
-    htop nano vim neovim \
+    htop nano \
     man-db man-pages xdg-utils \
     pacman-contrib reflector smartmontools ufw \
     steam
@@ -43,12 +43,7 @@ echo "=== Installing packages (AUR via yay) ==="
 yay -S --needed --noconfirm \
     google-chrome \
     visual-studio-code-bin \
-    octopi \
     bibata-cursor-theme-bin \
-    bibata-cursor-gruvbox-git \
-    gruvbox-plus-icon-theme-git \
-    gruvbox-material-icon-theme-git \
-    gruvbox-wallpaper \
     zsh-theme-powerlevel10k \
     plasma6-applets-window-title \
     plasma6-applets-separator-git \

@@ -60,10 +60,11 @@ if [[ ! -d "$USER_HOME/.oh-my-zsh" ]]; then
 fi
 
 echo "=== Copying user config files ==="
-mkdir -p "$USER_HOME/.config" "$USER_HOME/.local/share/icons" "$USER_HOME/.local/share/konsole"
+mkdir -p "$USER_HOME/.config" "$USER_HOME/.local/share/icons" "$USER_HOME/.local/share/konsole" "$USER_HOME/.local/bin"
 cp -r "$REPO_DIR/user/.config/"* "$USER_HOME/.config/"
 cp "$REPO_DIR/user/.local/share/icons/"* "$USER_HOME/.local/share/icons/"
 cp "$REPO_DIR/user/.local/share/konsole/"* "$USER_HOME/.local/share/konsole/"
+install -m 755 "$REPO_DIR/user/.local/bin/"* "$USER_HOME/.local/bin/"
 
 cp "$REPO_DIR/user/home/.zshrc" "$USER_HOME/.zshrc"
 cp "$REPO_DIR/user/home/.p10k.zsh" "$USER_HOME/.p10k.zsh"
@@ -85,5 +86,10 @@ echo "=== Setting locale ==="
 sudo sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
 sudo sed -i 's/^#tr_TR.UTF-8 UTF-8/tr_TR.UTF-8 UTF-8/' /etc/locale.gen
 sudo locale-gen
+
+if [[ -n "$WAYLAND_DISPLAY" ]]; then
+    echo "=== Applying display settings (2880x1800@120, scale 2) ==="
+    "$USER_HOME/.local/bin/zenbook-display.sh" || true
+fi
 
 echo "=== Done. Reboot recommended. ==="

@@ -24,7 +24,7 @@ sudo pacman -S --needed --noconfirm git \
     power-profiles-daemon \
     openssh usbutils zsh zsh-completions ttf-meslo-nerd \
     zsh-autosuggestions zsh-syntax-highlighting zsh-history-substring-search \
-    firefox github-cli \
+    firefox github-cli gwenview haruna \
     jq tree unzip zip 7zip rsync tmux fzf ripgrep fd bat eza wget \
     htop nano vim neovim \
     man-db man-pages xdg-utils \
@@ -42,6 +42,7 @@ fi
 echo "=== Installing packages (AUR via yay) ==="
 yay -S --needed --noconfirm \
     google-chrome \
+    visual-studio-code-bin \
     bibata-cursor-theme-bin \
     bibata-cursor-gruvbox-git \
     gruvbox-plus-icon-theme-git \

@@ -88,7 +88,7 @@ sudo sed -i 's/^#tr_TR.UTF-8 UTF-8/tr_TR.UTF-8 UTF-8/' /etc/locale.gen
 sudo locale-gen
 
 if [[ -n "$WAYLAND_DISPLAY" ]]; then
-    echo "=== Applying display settings (2880x1800@120, scale 2) ==="
+    echo "=== Applying display settings (2880x1800@120, scale 1.75) ==="
     "$USER_HOME/.local/bin/zenbook-display.sh" || true
 fi
 

@@ -3,7 +3,7 @@ export WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-wayland-0}"
 export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
 
 konsole --qwindowtitle "Claude Code" --workdir /home/dechros \
-    -e zsh -c 'export PATH="$HOME/.local/bin:$PATH"; echo y | claude --dangerously-skip-permissions; exec zsh' &
+    -e zsh -c 'export PATH="$HOME/.local/bin:$PATH"; claude --dangerously-skip-permissions; exec zsh' &
 TERM_PID=$!
 echo $TERM_PID > /tmp/claude-ai-pid
 touch /tmp/claude-ai-open

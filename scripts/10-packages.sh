@@ -49,6 +49,6 @@ yay -S --needed --noconfirm \
     plasma6-applets-separator-git \
     plasma6-applets-panel-spacer-extended \
     plasma6-applets-appgrid \
+    plasma6-applets-arch-power-switch-git \
     plasma6-applets-resources-monitor \
-    plasma6-applets-system-panel \
     plasma6-applets-weather-widget-3-git

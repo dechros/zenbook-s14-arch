@@ -1,0 +1,6 @@
+#!/bin/sh
+case "$1" in
+    post)
+        pkill -9 -x kscreenlocker_greet 2>/dev/null || true
+        ;;
+esac

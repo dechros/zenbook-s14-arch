@@ -24,7 +24,7 @@ sudo pacman -S --needed --noconfirm git \
     power-profiles-daemon \
     openssh usbutils zsh zsh-completions ttf-meslo-nerd \
     zsh-autosuggestions zsh-syntax-highlighting zsh-history-substring-search \
-    github-cli gwenview haruna \
+    github-cli gwenview haruna mattermost-desktop \
     jq tree unzip zip 7zip rsync tmux fzf ripgrep fd bat eza wget \
     htop nano \
     man-db man-pages xdg-utils \

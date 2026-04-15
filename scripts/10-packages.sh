@@ -14,7 +14,7 @@ sudo pacman -S --needed --noconfirm git \
     qt5-wayland qt6-wayland inotify-tools \
     vulkan-intel lib32-vulkan-intel vulkan-tools \
     intel-media-driver libva-intel-driver \
-    plasma-nm plasma-pa kscreen bluedevil kde-gtk-config breeze-gtk \
+    plasma-nm plasma-pa kscreen bluedevil kde-gtk-config breeze-gtk kwallet-pam \
     plasma-systemmonitor spectacle papirus-icon-theme \
     wireless-regdb \
     networkmanager network-manager-applet wpa_supplicant \

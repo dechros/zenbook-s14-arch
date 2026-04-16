@@ -13,7 +13,6 @@ fi
 
 echo "=== Enabling system services ==="
 sudo systemctl daemon-reload
-sudo systemctl enable --now powertop.service
 sudo systemctl enable --now auto-brightness.service
 sudo udevadm control --reload-rules
 sudo udevadm trigger

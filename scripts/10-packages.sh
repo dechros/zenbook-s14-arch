@@ -13,11 +13,11 @@ sudo pacman -S --needed --noconfirm git \
     terminus-font powertop iw sof-firmware alsa-ucm-conf \
     qt5-wayland qt6-wayland inotify-tools \
     vulkan-intel lib32-vulkan-intel vulkan-tools \
-    intel-media-driver libva-intel-driver \
+    intel-media-driver \
     plasma-nm plasma-pa kscreen bluedevil kde-gtk-config breeze-gtk kwallet-pam \
     plasma-systemmonitor spectacle papirus-icon-theme \
     wireless-regdb \
-    networkmanager network-manager-applet wpa_supplicant \
+    networkmanager \
     cups cups-pk-helper system-config-printer \
     bluez bluez-utils \
     pipewire pipewire-alsa pipewire-jack pipewire-pulse wireplumber gst-plugin-pipewire \

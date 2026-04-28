@@ -4,7 +4,7 @@ After=multi-user.target
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/auto-brightness.py
+ExecStart=/usr/local/bin/auto-kbd-brightness.py
 Restart=always
 RestartSec=5
 

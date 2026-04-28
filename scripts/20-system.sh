@@ -11,6 +11,9 @@ if [[ -d "$REPO_DIR/system/boot" && -d /boot/loader ]]; then
     sudo cp -r "$REPO_DIR/system/boot/"* /boot/
 fi
 
+echo "=== Building CachyOS UKI ==="
+sudo mkinitcpio -p linux-cachyos
+
 echo "=== Enabling system services ==="
 sudo systemctl daemon-reload
 sudo systemctl enable --now auto-kbd-brightness.service

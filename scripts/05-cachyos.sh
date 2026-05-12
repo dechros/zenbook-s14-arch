@@ -17,8 +17,14 @@ fi
 
 echo "=== Adding cachyos-v3 repository ==="
 if ! grep -q '^\[cachyos-v3\]' /etc/pacman.conf; then
-    sudo sed -i '/^\[core\]/i # CachyOS v3 repo\n[cachyos-v3]\nInclude = \/etc\/pacman.d\/cachyos-v3-mirrorlist\n' /etc/pacman.conf
+    sudo sed -i '/^\[core\]/i [cachyos-v3]\nInclude = \/etc\/pacman.d\/cachyos-v3-mirrorlist\n' /etc/pacman.conf
 fi
+
+echo "=== Rating CachyOS mirrors ==="
+if ! command -v cachyos-rate-mirrors &>/dev/null; then
+    sudo pacman -S --needed --noconfirm cachyos-rate-mirrors
+fi
+sudo cachyos-rate-mirrors
 
 sudo pacman -Sy
 

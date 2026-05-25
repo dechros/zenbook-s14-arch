@@ -1,0 +1,12 @@
+#!/bin/sh
+LED=/sys/class/leds/asus::kbd_backlight/brightness
+STATE=/run/kbd-backlight.state
+
+case "$1" in
+    pre)
+        cat "$LED" > "$STATE" 2>/dev/null || true
+        ;;
+    post)
+        [ -r "$STATE" ] && cat "$STATE" > "$LED" 2>/dev/null || true
+        ;;
+esac

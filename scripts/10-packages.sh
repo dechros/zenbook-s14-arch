@@ -31,7 +31,7 @@ sudo pacman -S --needed --noconfirm git \
     pacman-contrib reflector smartmontools ufw \
     kvantum \
     kdeconnect \
-    steam
+    steam lutris wine winetricks
 
 if ! command -v yay &>/dev/null; then
     echo "=== Installing yay ==="

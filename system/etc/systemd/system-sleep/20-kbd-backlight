@@ -1,12 +1,18 @@
 #!/bin/sh
 LED=/sys/class/leds/asus::kbd_backlight/brightness
-STATE=/run/kbd-backlight.state
+STATE=/var/lib/kbd-backlight.state
 
 case "$1" in
     pre)
-        cat "$LED" > "$STATE" 2>/dev/null || true
+        VAL=$(cat "$LED" 2>/dev/null)
+        echo "$VAL" > "$STATE"
+        logger -t kbd-backlight "pre $2: saved $VAL"
         ;;
     post)
-        [ -r "$STATE" ] && cat "$STATE" > "$LED" 2>/dev/null || true
+        if [ -r "$STATE" ]; then
+            VAL=$(cat "$STATE")
+            echo "$VAL" > "$LED"
+            logger -t kbd-backlight "post $2: restored $VAL"
+        fi
         ;;
 esac

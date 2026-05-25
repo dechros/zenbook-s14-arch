@@ -29,7 +29,6 @@ sudo pacman -S --needed --noconfirm git \
     htop nano \
     man-db man-pages xdg-utils \
     pacman-contrib reflector smartmontools ufw \
-    kvantum \
     kdeconnect \
     steam lutris wine winetricks
 

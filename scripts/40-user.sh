@@ -18,6 +18,8 @@ mkdir -p "$USER_HOME/.config" \
 cp -r "$REPO_DIR/user/.config/"* "$USER_HOME/.config/"
 cp "$REPO_DIR/user/.local/share/icons/"* "$USER_HOME/.local/share/icons/"
 cp "$REPO_DIR/user/.local/share/konsole/"* "$USER_HOME/.local/share/konsole/"
+mkdir -p "$USER_HOME/.local/share/easyeffects/output"
+cp "$REPO_DIR/user/.local/share/easyeffects/output/"*.json "$USER_HOME/.local/share/easyeffects/output/"
 install -m 755 "$REPO_DIR/user/.local/bin/"* "$USER_HOME/.local/bin/"
 cp "$REPO_DIR/user/Pictures/Wallpapers/"* "$USER_HOME/Pictures/Wallpapers/"
 cp "$REPO_DIR/user/home/.zshrc" "$USER_HOME/.zshrc"

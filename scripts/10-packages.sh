@@ -21,6 +21,7 @@ sudo pacman -S --needed --noconfirm git \
     cups cups-pk-helper system-config-printer \
     bluez bluez-utils \
     pipewire pipewire-alsa pipewire-jack pipewire-pulse wireplumber gst-plugin-pipewire \
+    easyeffects lsp-plugins-lv2 calf \
     power-profiles-daemon \
     openssh usbutils zsh zsh-completions ttf-meslo-nerd \
     zsh-autosuggestions zsh-syntax-highlighting zsh-history-substring-search \

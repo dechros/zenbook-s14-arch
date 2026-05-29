@@ -4,6 +4,9 @@ REPO_DIR="${REPO_DIR:-$(cd "$(dirname "$0")/.." && pwd)}"
 
 echo "=== Copying system files ==="
 sudo cp -r "$REPO_DIR/system/etc/"* /etc/
+if [[ -d "$REPO_DIR/system/usr" ]]; then
+    sudo cp -r "$REPO_DIR/system/usr/"* /usr/
+fi
 if [[ -d "$REPO_DIR/system/boot" && -d /boot/loader ]]; then
     sudo cp -r "$REPO_DIR/system/boot/"* /boot/
 fi

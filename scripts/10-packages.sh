@@ -54,5 +54,4 @@ yay -S --needed --noconfirm \
     plasma6-applets-appgrid \
     plasma6-applets-arch-power-switch-git \
     plasma6-applets-resources-monitor \
-    plasma6-applets-weather-widget-3-git \
-    trayscale
+    plasma6-applets-weather-widget-3-git

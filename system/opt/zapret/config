@@ -1,0 +1,28 @@
+SET_MAXELEM=522288
+IPSET_OPT="hashsize 262144 maxelem $SET_MAXELEM"
+IP2NET_OPT4="--prefix-length=22-30 --v4-threshold=3/4"
+IP2NET_OPT6="--prefix-length=56-64 --v6-threshold=5"
+AUTOHOSTLIST_RETRANS_THRESHOLD=3
+AUTOHOSTLIST_FAIL_THRESHOLD=3
+AUTOHOSTLIST_FAIL_TIME=60
+AUTOHOSTLIST_DEBUGLOG=0
+MDIG_THREADS=30
+GZIP_LISTS=1
+
+TPWS_SOCKS_ENABLE=0
+TPWS_ENABLE=0
+
+NFQWS_ENABLE=1
+NFQWS_PORTS_TCP=80,443
+NFQWS_PORTS_UDP=443
+NFQWS_TCP_PKT_OUT=$((6+$AUTOHOSTLIST_RETRANS_THRESHOLD))
+NFQWS_TCP_PKT_IN=3
+NFQWS_UDP_PKT_OUT=$((6+$AUTOHOSTLIST_RETRANS_THRESHOLD))
+NFQWS_UDP_PKT_IN=0
+NFQWS_OPT="--dpi-desync=fakedsplit --dpi-desync-split-pos=1 --dpi-desync-fooling=md5sig --dpi-desync-ttl=8 --dpi-desync-fake-tls=0x00000000 --dpi-desync-repeats=10"
+
+MODE_FILTER=none
+# Required: makes zapret apply nftables firewall rules at every boot.
+# Without this only the nfqws daemon starts and no traffic is queued
+# (rules are lost on reboot, so Discord/etc. silently break after a reboot).
+INIT_APPLY_FW=1

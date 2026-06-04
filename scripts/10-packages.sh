@@ -31,6 +31,7 @@ sudo pacman -S --needed --noconfirm git \
     man-db man-pages xdg-utils \
     pacman-contrib reflector smartmontools ufw \
     kdeconnect \
+    tailscale \
     steam lutris wine winetricks
 
 if ! command -v yay &>/dev/null; then

@@ -1,6 +1,18 @@
 #!/bin/sh
+# On resume, kscreenlocker_greet sometimes loses its keyboard grab (Plasma 6
+# Wayland) — the unlock dialog shows but won't accept typing. Killing it makes
+# the locker respawn a fresh greeter that regrabs input.
+#
+# Run the actual work detached via systemd-run so we DON'T block resume (a
+# system-sleep hook runs synchronously and stalls the desktop coming back).
+# The helper logs to the journal (tag: lockscreen-kbd-fix) and retries briefly,
+# so the next time it still fails we can tell from the log WHICH case we're in:
+#   - greeter killed but kbd still dead  -> compositor-level bug, kill won't help
+#   - no greeter seen                    -> timing/mechanism wrong
+#   - no log line at all                 -> hook didn't fire (wrong resume path)
 case "$1" in
     post)
-        pkill -9 -f kscreenlocker_greet 2>/dev/null || true
+        systemd-run --quiet --collect \
+            /usr/lib/systemd/system-sleep/restore-lockscreen-kbd "$2" || true
         ;;
 esac

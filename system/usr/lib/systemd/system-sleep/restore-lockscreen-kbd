@@ -1,0 +1,25 @@
+#!/bin/sh
+# Helper for 10-kscreenlocker. Kills the (possibly frozen) lock-screen greeter
+# after resume so the locker respawns a fresh one that regrabs the keyboard.
+#
+# Retries for up to 4s to catch the greeter whether it is already up at resume
+# or spawns a moment later (the original single immediate kill missed the latter
+# case — that was the "sometimes still broken" race). Stops after the FIRST
+# kill so we don't wipe a re-entry the user may already be typing into.
+#
+# The filename deliberately avoids the substring "kscreenlocker_greet" so that
+# our own pgrep/pkill -f pattern can never match this helper and kill itself.
+sleep_type="$1"
+log() { logger -t lockscreen-kbd-fix "$*"; }
+
+i=0
+while [ "$i" -lt 8 ]; do
+    if pgrep -f kscreenlocker_greet >/dev/null 2>&1; then
+        pkill -9 -f kscreenlocker_greet
+        log "resume ($sleep_type): greeter found at t=$((i * 5))00ms, killed -> respawn should regrab keyboard"
+        exit 0
+    fi
+    i=$((i + 1))
+    sleep 0.5
+done
+log "resume ($sleep_type): no greeter seen within 4s (screen likely was not locked)"

@@ -21,7 +21,10 @@ sudo systemctl enable --now zapret
 sudo systemctl restart zapret
 
 echo "=== Setting Cloudflare DNS to defeat ISP DNS hijacking ==="
-# Apply to the active Wi-Fi connection (Superonline hijacks default DNS).
+# NOTE: the primary, permanent mechanism is the global NetworkManager DNS at
+# system/etc/NetworkManager/conf.d/dns-cloudflare.conf (deployed by 20-system.sh),
+# which forces Cloudflare DNS on EVERY network automatically. The per-connection
+# nmcli below is a belt-and-suspenders fallback for the currently-active Wi-Fi.
 CONN="$(nmcli -t -f NAME,TYPE connection show --active 2>/dev/null \
     | grep -iE ':(802-11-wireless|wifi)$' | head -1 | cut -d: -f1)"
 if [[ -n "$CONN" ]]; then

@@ -38,6 +38,7 @@ Post-install configuration for ASUS Zenbook S14 (UX5406SA) on Arch Linux with KD
 install.sh              main entry, runs scripts/* in order
 scripts/                install phases (firmware, packages, system, hotkey, user, env, display)
 hotkey-handler/         source for the hotkey systemd service
+appgrid/                patches for the AppGrid launcher (clean grid customization)
 system/                 files copied to /
 user/                   files copied to $HOME
 ```

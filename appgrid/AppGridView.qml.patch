@@ -1,0 +1,19 @@
+--- /usr/share/plasma/plasmoids/dev.xarbit.appgrid/contents/ui/AppGridView.qml	2026-05-23 23:07:09.000000000 +0300
++++ /home/dechros/.local/share/plasma/plasmoids/dev.xarbit.appgrid/contents/ui/AppGridView.qml	2026-06-06 19:39:23.886283654 +0300
+@@ -271,15 +271,7 @@
+     Keys.onBacktabPressed: function(event) { event.accepted = true }
+ 
+     Keys.onPressed: function(event) {
+-        // Redirect typing to search bar, but not Tab or special keys
+-        if (event.key === Qt.Key_Tab || event.key === Qt.Key_Backtab)
+-            return
+-        if (event.text.length > 0 && !event.modifiers && searchField) {
+-            searchField.forceActiveFocus()
+-            searchField.text += event.text
+-            currentIndex = -1
+-            recentIndex = -1
+-        }
++        // dechros: type-to-search devre dışı — yazınca arama tetiklenmesin
+     }
+ 
+     onCurrentIndexChanged: {

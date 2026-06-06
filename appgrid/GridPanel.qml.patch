@@ -1,0 +1,56 @@
+--- /usr/share/plasma/plasmoids/dev.xarbit.appgrid/contents/ui/GridPanel.qml	2026-05-23 23:07:09.000000000 +0300
++++ /home/dechros/.local/share/plasma/plasmoids/dev.xarbit.appgrid/contents/ui/GridPanel.qml	2026-06-06 20:03:54.228357705 +0300
+@@ -31,10 +31,10 @@
+     readonly property int columns: Plasmoid.configuration.gridColumns || 7
+     readonly property int rows: Plasmoid.configuration.gridRows || 4
+     readonly property int sortMode: Plasmoid.configuration.sortMode || 0
+-    readonly property bool cfgShowCategoryBar: Plasmoid.configuration.showCategoryBar !== false
++    readonly property bool cfgShowCategoryBar: false  // dechros: kategori butonları kapalı
+     readonly property bool cfgStartWithFavorites: Plasmoid.configuration.startWithFavorites !== false
+     readonly property bool cfgShowRecentApps: Plasmoid.configuration.showRecentApps !== false
+-    readonly property bool cfgShowDividers: Plasmoid.configuration.showDividers !== false
++    readonly property bool cfgShowDividers: false  // dechros: ayraç çizgileri kapalı
+     readonly property bool cfgShowTooltips: Plasmoid.configuration.showTooltips !== false
+     readonly property bool cfgShowNewAppBadge: Plasmoid.configuration.showNewAppBadge !== false
+     readonly property bool cfgHideLabelsOnFavorites: Plasmoid.configuration.hideLabelsOnFavorites === true
+@@ -97,7 +97,7 @@
+     // Always use icon-based cell estimates to avoid circular dependency
+     // (panel width → grid cellWidth → grid width → panel width).
+     readonly property real panelMargin: nativePopup ? Kirigami.Units.largeSpacing : Kirigami.Units.largeSpacing * 2
+-    readonly property real headerHeight: Kirigami.Units.gridUnit * 5
++    readonly property real headerHeight: 0  // dechros: header gizli, üstte boşluk bırakma
+     readonly property real panelWidth: estCellWidth * columns + panelMargin * 2
+     readonly property real panelHeight: estCellHeight * rows + panelMargin * 2 + headerHeight
+ 
+@@ -120,7 +120,7 @@
+                      Kirigami.Theme.backgroundColor.b,
+                      bgOpacity)
+ 
+-    border.width: nativePopup ? 0 : 1
++    border.width: 0  // dechros: dış çerçeve çizgisi kapalı
+     border.color: nativePopup ? "transparent"
+                   : Kirigami.ColorUtils.linearInterpolation(
+                         Kirigami.Theme.backgroundColor,
+@@ -220,7 +220,7 @@
+         categoryGridView.currentIndex = -1
+         categoryGridView.recentIndex = -1
+         _needsScrollToTop = true
+-        searchBar.field.forceActiveFocus()
++        appGrid.forceActiveFocus()  // dechros: açılışta odak ızgarada (gizli arama değil)
+     }
+ 
+     function launchSearchResult(index) {
+@@ -265,11 +265,13 @@
+ 
+         // -- Header --
+         RowLayout {
++            visible: false  // dechros: header tamamen boş (arama+güç butonu kapalı) → gizle, üst boşluğu kaldır
+             Layout.fillWidth: true
+             spacing: Kirigami.Units.largeSpacing
+ 
+             SearchBar {
+                 id: searchBar
++                visible: false  // dechros: üstteki arama çubuğu gizli
+                 property string savedCategory: ""
+                 property bool savedFavorites: false
+                 property bool filtersCleared: false

@@ -25,5 +25,10 @@ cp "$REPO_DIR/user/Pictures/Wallpapers/"* "$USER_HOME/Pictures/Wallpapers/"
 cp "$REPO_DIR/user/home/.zshrc" "$USER_HOME/.zshrc"
 cp "$REPO_DIR/user/home/.p10k.zsh" "$USER_HOME/.p10k.zsh"
 
+echo "=== Enabling user services ==="
+systemctl --user daemon-reload || true
+# audio-autoswitch: route EasyEffects output (EQ) to the last-plugged device
+systemctl --user enable audio-autoswitch.service || true
+
 echo "=== Switching default shell to zsh ==="
 sudo chsh -s /usr/bin/zsh "$USERNAME"

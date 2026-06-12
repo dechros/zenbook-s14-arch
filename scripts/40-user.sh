@@ -13,11 +13,15 @@ echo "=== Copying user config files ==="
 mkdir -p "$USER_HOME/.config" \
     "$USER_HOME/.local/share/icons" \
     "$USER_HOME/.local/share/konsole" \
+    "$USER_HOME/.local/share/applications" \
     "$USER_HOME/.local/bin" \
     "$USER_HOME/Pictures/Wallpapers"
 cp -r "$REPO_DIR/user/.config/"* "$USER_HOME/.config/"
 cp "$REPO_DIR/user/.local/share/icons/"* "$USER_HOME/.local/share/icons/"
 cp "$REPO_DIR/user/.local/share/konsole/"* "$USER_HOME/.local/share/konsole/"
+# anydesk.desktop override: HiDPI scaling fix (GDK_SCALE=1, remote ekrani doldursun)
+cp "$REPO_DIR/user/.local/share/applications/"* "$USER_HOME/.local/share/applications/"
+update-desktop-database "$USER_HOME/.local/share/applications" 2>/dev/null || true
 mkdir -p "$USER_HOME/.local/share/easyeffects/output"
 cp "$REPO_DIR/user/.local/share/easyeffects/output/"*.json "$USER_HOME/.local/share/easyeffects/output/"
 install -m 755 "$REPO_DIR/user/.local/bin/"* "$USER_HOME/.local/bin/"

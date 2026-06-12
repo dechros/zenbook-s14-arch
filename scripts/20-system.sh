@@ -18,3 +18,6 @@ echo "=== Enabling system services ==="
 sudo systemctl daemon-reload
 sudo udevadm control --reload-rules
 sudo udevadm trigger
+# anydesk: always-on backend so the relay stays connected; the system-sleep
+# hook (30-anydesk-reconnect) restarts it on resume to recover the relay.
+sudo systemctl enable anydesk.service || true

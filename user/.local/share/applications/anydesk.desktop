@@ -1,0 +1,15 @@
+[Desktop Entry]
+Type=Application
+Name=AnyDesk
+GenericName=AnyDesk
+X-GNOME-FullName=AnyDesk
+# dechros: HiDPI fix. Panel 2880x1800 @ KWin scale 2 => AnyDesk'in GTK cizim
+# alani 1440x900 (ceyrek) allocate ediliyordu, remote ekran sol-uste sikisiyordu.
+# GDK_SCALE=1 ile GTK scale 1'e zorlanir => tam pencere allocate edilir, remote dolar.
+Exec=env GDK_SCALE=1 GDK_DPI_SCALE=1 GDK_BACKEND=x11 /usr/bin/anydesk %u
+Icon=anydesk
+Terminal=false
+TryExec=anydesk
+Categories=Network;GTK;
+MimeType=x-scheme-handler/anydesk;
+Name[de_DE]=AnyDesk

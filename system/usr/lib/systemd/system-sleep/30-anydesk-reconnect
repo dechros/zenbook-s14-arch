@@ -1,0 +1,16 @@
+#!/bin/sh
+# After resume, AnyDesk's relay connection drops and does NOT recover on its
+# own (observed: stuck "AnyDesk not connected" for minutes). Wait for the
+# network to come back, then restart the service so it re-establishes the relay.
+#
+# Detached via systemd-run so the (synchronous) sleep hook doesn't block the
+# desktop coming back. Logs to the journal (tag: anydesk-reconnect).
+case "$1" in
+    post)
+        systemd-run --quiet --collect /bin/sh -c '
+            nm-online -t 25 -q
+            systemctl restart anydesk.service
+            logger -t anydesk-reconnect "resume: network up, restarted anydesk.service (relay reconnect)"
+        ' || true
+        ;;
+esac

@@ -31,7 +31,6 @@ sudo pacman -S --needed --noconfirm git \
     man-db man-pages xdg-utils \
     pacman-contrib reflector smartmontools ufw \
     kdeconnect \
-    tailscale \
     steam lutris wine winetricks
 
 if ! command -v yay &>/dev/null; then
@@ -55,5 +54,4 @@ yay -S --needed --noconfirm \
     plasma6-applets-arch-power-switch-git \
     plasma6-applets-resources-monitor \
     plasma6-applets-weather-widget-3-git \
-    trayscale \
     anydesk-bin

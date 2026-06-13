@@ -1,16 +1,30 @@
 #!/bin/sh
 # After resume, AnyDesk's relay connection drops and does NOT recover on its
-# own (observed: stuck "AnyDesk not connected" for minutes). Wait for the
-# network to come back, then restart the service so it re-establishes the relay.
+# own (observed: stuck "AnyDesk not connected" for minutes). Restart the service
+# so it re-establishes the relay.
 #
-# Detached via systemd-run so the (synchronous) sleep hook doesn't block the
-# desktop coming back. Logs to the journal (tag: anydesk-reconnect).
+# Why the connectivity gate matters (measured): a cold restart on a *ready*
+# network reconnects the relay in ~10s. But right after resume, NetworkManager
+# reports the link "connected" ~2s before real internet works, so restarting
+# immediately makes AnyDesk's relay TCP time out and fall into a ~2-minute
+# backoff. So we wait until connectivity is *actually* "full" (active re-probe),
+# then restart -> fast reconnect.
+#
+# --unit gives a single-instance guard: suspend-then-hibernate fires this hook
+# twice per resume; the duplicate systemd-run is refused instead of racing a
+# second restart. --collect frees the unit name once it exits (next resume).
+# Detached via systemd-run so the synchronous sleep hook doesn't block resume.
 case "$1" in
     post)
-        systemd-run --quiet --collect /bin/sh -c '
-            nm-online -t 25 -q
+        systemd-run --quiet --collect --unit=anydesk-resume-reconnect /bin/sh -c '
+            nm-online -t 30 -q
+            i=0
+            while [ "$i" -lt 30 ]; do
+                [ "$(nmcli networking connectivity check 2>/dev/null)" = "full" ] && break
+                i=$((i+1)); sleep 2
+            done
             systemctl restart anydesk.service
-            logger -t anydesk-reconnect "resume: network up, restarted anydesk.service (relay reconnect)"
+            logger -t anydesk-reconnect "resume: connectivity=$(nmcli -t networking connectivity 2>/dev/null), restarted anydesk.service"
         ' || true
         ;;
 esac

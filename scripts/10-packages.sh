@@ -17,7 +17,7 @@ sudo pacman -S --needed --noconfirm git \
     plasma-nm plasma-pa kscreen bluedevil kde-gtk-config breeze-gtk kwallet-pam \
     plasma-systemmonitor spectacle papirus-icon-theme \
     wireless-regdb \
-    networkmanager \
+    networkmanager iwd \
     cups cups-pk-helper system-config-printer \
     bluez bluez-utils \
     pipewire pipewire-alsa pipewire-jack pipewire-pulse wireplumber gst-plugin-pipewire \

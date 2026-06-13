@@ -27,3 +27,10 @@ sudo systemctl enable anydesk.service || true
 # /etc/xdg/reflector/reflector.conf) + cachyos-rate-mirrors.timer (CachyOS).
 sudo systemctl enable --now reflector.timer || true
 sudo systemctl enable --now cachyos-rate-mirrors.timer || true
+
+# WiFi backend = iwd (config: NetworkManager/conf.d/wifi-backend.conf). With
+# wpa_supplicant the boot DHCP stalled ~14s; iwd has the link ready when DHCP
+# starts so the first request succeeds (~0.2s). Mask wpa_supplicant so it can't
+# race iwd for the device.
+sudo systemctl enable iwd.service || true
+sudo systemctl mask wpa_supplicant.service || true

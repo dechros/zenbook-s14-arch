@@ -21,3 +21,9 @@ sudo udevadm trigger
 # anydesk: always-on backend so the relay stays connected; the system-sleep
 # hook (30-anydesk-reconnect) restarts it on resume to recover the relay.
 sudo systemctl enable anydesk.service || true
+
+# mirror auto-maintenance: keep both repos' mirrorlists ranked by speed so
+# updates don't fail on a slow mirror. reflector.timer (Arch, weekly, config in
+# /etc/xdg/reflector/reflector.conf) + cachyos-rate-mirrors.timer (CachyOS).
+sudo systemctl enable --now reflector.timer || true
+sudo systemctl enable --now cachyos-rate-mirrors.timer || true

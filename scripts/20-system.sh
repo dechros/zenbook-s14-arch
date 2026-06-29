@@ -34,3 +34,9 @@ sudo systemctl enable --now cachyos-rate-mirrors.timer || true
 # race iwd for the device.
 sudo systemctl enable iwd.service || true
 sudo systemctl mask wpa_supplicant.service || true
+
+# systemd 261 auto-enables systemd-pcrlogin@ (TPM measurement of user records).
+# We don't use measured user records; on this TPM it fails every boot with
+# "No space left on device" (TPM NV full) and shows as a failed unit. Mask it.
+# (Unrelated to TPM2 disk unlock, which uses boot-stack PCRs, not pcrlogin.)
+sudo systemctl mask systemd-pcrlogin@.service || true

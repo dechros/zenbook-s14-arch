@@ -1,0 +1,14 @@
+#!/bin/sh
+# Uyku sonrasi Zenbook S14 (UX5406) ic klavyesi olu kaliyordu: kilit ekrani
+# aciliyor ama klavye yazmiyor (mouse calisiyor - farkli bus). Kok sebep kernel
+# i8042/atkbd denetleyicisinin resume'da yeniden init olmamasi -- kscreenlocker
+# greeter'i DEGIL (greeter'i oldurup respawn etmek hic ise yaramadi, cunku cihaz
+# compositor'in altinda, kernel seviyesinde olu). serio0 = "i8042 KBD port".
+# Cozum: resume'da i8042 KBD portunu yeniden tarat -> atkbd tekrar baglanir.
+# Kaynak (SOLVED, KDE Wayland): forums.opensuse.org/t/.../130657
+case "$1" in
+    post)
+        [ -w /sys/devices/platform/i8042/serio0/drvctl ] && \
+            printf rescan > /sys/devices/platform/i8042/serio0/drvctl
+        ;;
+esac

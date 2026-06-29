@@ -40,3 +40,8 @@ sudo systemctl mask wpa_supplicant.service || true
 # "No space left on device" (TPM NV full) and shows as a failed unit. Mask it.
 # (Unrelated to TPM2 disk unlock, which uses boot-stack PCRs, not pcrlogin.)
 sudo systemctl mask systemd-pcrlogin@.service || true
+
+# freeze-capture: CS:GO hard-freeze teshisi (drm/xe #7513 suphesi). Boot'ta
+# onceki boot temiz kapanmadiysa o boot'un xe/drm loglarini /var/log/freeze-capture
+# altina kaydeder. (journald.conf.d/fast-sync + sysctl.d/99-freeze-debug ile birlikte.)
+sudo systemctl enable freeze-capture.service || true

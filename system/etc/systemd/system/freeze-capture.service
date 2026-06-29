@@ -1,0 +1,11 @@
+[Unit]
+Description=Capture logs from previous unclean boot (CS:GO hard-freeze / drm-xe diagnosis)
+After=systemd-journald.service
+ConditionPathExists=/usr/local/bin/freeze-capture
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/freeze-capture
+
+[Install]
+WantedBy=multi-user.target

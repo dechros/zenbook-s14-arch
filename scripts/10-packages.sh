@@ -31,7 +31,7 @@ sudo pacman -S --needed --noconfirm git \
     man-db man-pages xdg-utils \
     pacman-contrib reflector smartmontools ufw \
     kdeconnect \
-    steam lutris wine winetricks
+    steam gamescope gamemode lib32-gamemode mangohud lib32-mangohud
 
 if ! command -v yay &>/dev/null; then
     echo "=== Installing yay ==="

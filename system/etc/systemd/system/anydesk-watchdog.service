@@ -1,0 +1,7 @@
+[Unit]
+Description=AnyDesk relay watchdog (restart service if relay is not online)
+After=network-online.target anydesk.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/anydesk-watchdog

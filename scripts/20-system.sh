@@ -20,7 +20,12 @@ sudo udevadm control --reload-rules
 sudo udevadm trigger
 # anydesk: always-on backend so the relay stays connected; the system-sleep
 # hook (30-anydesk-reconnect) restarts it on resume to recover the relay.
+# Self-heal: restart.conf drop-in adds Restart=always (anydesk SIGABRT-crashes
+# periodically and the stock unit had no Restart -> needed manual restart).
+# anydesk-watchdog.timer (every 2min) catches the "process alive but relay dead"
+# case that Restart can't see, with a 90s startup guard to avoid restart loops.
 sudo systemctl enable anydesk.service || true
+sudo systemctl enable anydesk-watchdog.timer || true
 
 # mirror auto-maintenance: keep both repos' mirrorlists ranked by speed so
 # updates don't fail on a slow mirror. reflector.timer (Arch, weekly, config in

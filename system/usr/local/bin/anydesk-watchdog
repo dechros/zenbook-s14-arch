@@ -1,0 +1,20 @@
+#!/bin/sh
+# anydesk backend bazen process ayaktayken relay'i kopariyor (get-status != online);
+# Restart=always bunu goremez (process yasiyor). Bu watchdog (timer, her 2dk) o
+# durumu yakalar. GUARD: servis <90sn once basladiysa (relay hala baglaniyor
+# olabilir) DOKUNMA -- yoksa normal baslamayi kesip restart-loop yaratir.
+[ "$(nmcli networking connectivity 2>/dev/null)" = "full" ] || exit 0
+[ "$(systemctl is-active anydesk.service)" = "active" ] || exit 0
+
+# servis ne zamandir aktif (wall-clock; uykudan etkilenmez)
+enter=$(systemctl show anydesk.service -p ActiveEnterTimestamp --value 2>/dev/null)
+[ -n "$enter" ] || exit 0
+enter_epoch=$(date -d "$enter" +%s 2>/dev/null) || exit 0
+[ $(( $(date +%s) - enter_epoch )) -lt 90 ] && exit 0   # yeni basladi, relay'e sure tani
+
+status=$(anydesk --get-status 2>/dev/null)
+case "$status" in
+    online) exit 0 ;;
+    *) systemctl restart anydesk.service
+       logger -t anydesk-watchdog "status='$status' >90s active, network full -> restarted anydesk.service" ;;
+esac

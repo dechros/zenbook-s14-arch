@@ -10,13 +10,17 @@
 # backoff. So we wait until connectivity is *actually* "full" (active re-probe),
 # then restart -> fast reconnect.
 #
-# --unit gives a single-instance guard: suspend-then-hibernate fires this hook
-# twice per resume; the duplicate systemd-run is refused instead of racing a
-# second restart. --collect frees the unit name once it exits (next resume).
+# Single-instance guard via flock (not --unit): suspend-then-hibernate fires this
+# hook twice per resume. A fixed --unit name collided ("Unit ... was already
+# loaded or has a fragment file") and, once the transient unit lingered loaded,
+# it silently blocked the reconnect on LATER resumes too. flock -n inside an
+# auto-named transient unit dedupes cleanly and leaves no unit name to collide.
 # Detached via systemd-run so the synchronous sleep hook doesn't block resume.
 case "$1" in
     post)
-        systemd-run --quiet --collect --unit=anydesk-resume-reconnect /bin/sh -c '
+        systemd-run --quiet --collect /bin/sh -c '
+            exec 9>/run/anydesk-resume-reconnect.lock
+            flock -n 9 || exit 0
             nm-online -t 30 -q
             i=0
             while [ "$i" -lt 30 ]; do

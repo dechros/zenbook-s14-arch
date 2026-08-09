@@ -46,7 +46,8 @@ sudo systemctl mask wpa_supplicant.service || true
 # (Unrelated to TPM2 disk unlock, which uses boot-stack PCRs, not pcrlogin.)
 sudo systemctl mask systemd-pcrlogin@.service || true
 
-# freeze-capture: CS:GO hard-freeze teshisi (drm/xe #7513 suphesi). Boot'ta
-# onceki boot temiz kapanmadiysa o boot'un xe/drm loglarini /var/log/freeze-capture
-# altina kaydeder. (journald.conf.d/fast-sync + sysctl.d/99-freeze-debug ile birlikte.)
+# freeze-capture: CS:GO hard-freeze diagnosis (suspected drm/xe #7513). On boot,
+# if the previous boot did not shut down cleanly, it saves that boot's xe/drm logs
+# under /var/log/freeze-capture. (Together with journald.conf.d/fast-sync +
+# sysctl.d/99-freeze-debug.)
 sudo systemctl enable freeze-capture.service || true

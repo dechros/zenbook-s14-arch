@@ -3,9 +3,10 @@ Type=Application
 Name=AnyDesk
 GenericName=AnyDesk
 X-GNOME-FullName=AnyDesk
-# dechros: HiDPI fix. Panel 2880x1800 @ KWin scale 2 => AnyDesk'in GTK cizim
-# alani 1440x900 (ceyrek) allocate ediliyordu, remote ekran sol-uste sikisiyordu.
-# GDK_SCALE=1 ile GTK scale 1'e zorlanir => tam pencere allocate edilir, remote dolar.
+# dechros: HiDPI fix. On a 2880x1800 panel @ KWin scale 2, AnyDesk's GTK drawing
+# area was allocated at 1440x900 (a quarter) and the remote screen was cramped in
+# the top-left. GDK_SCALE=1 forces GTK to scale 1 => the full window is allocated
+# and the remote fills it.
 Exec=env GDK_SCALE=1 GDK_DPI_SCALE=1 GDK_BACKEND=x11 /usr/bin/anydesk %u
 Icon=anydesk
 Terminal=false

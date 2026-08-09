@@ -1,12 +1,13 @@
 #!/bin/sh
-# Boot'ta calisir: onceki boot temiz kapanmadiysa (= muhtemel hard freeze/donma)
-# o boot'un kernel + xe/drm loglarini ve sistem bilgisini kaydeder. Boylece
-# CS:GO donmasi sonrasi reboot'ta kanit otomatik toplanir (drm/xe #7513 teshisi).
+# Runs on boot: if the previous boot did not shut down cleanly (= a probable hard
+# freeze), it saves that boot's kernel + xe/drm logs and system info. This way,
+# after a CS:GO freeze, evidence is collected automatically on the next reboot
+# (drm/xe #7513 diagnosis).
 OUT=/var/log/freeze-capture
 mkdir -p "$OUT"
-# onceki boot temiz mi: shutdown/reboot markeri var mi?
+# was the previous boot clean: is there a shutdown/reboot marker?
 if journalctl -b -1 -o cat -n 60 2>/dev/null | grep -qiE 'Reached target.*(Shutdown|Power-Off|Reboot)|systemd-shutdown|Syncing filesystems'; then
-    exit 0   # temiz kapanis, donma degil
+    exit 0   # clean shutdown, not a freeze
 fi
 TS=$(date +%Y%m%d-%H%M%S 2>/dev/null || echo prev)
 F="$OUT/freeze-$TS.txt"
@@ -19,5 +20,5 @@ F="$OUT/freeze-$TS.txt"
     journalctl -b -1 --no-pager 2>/dev/null | grep -iE 'xe |drm|gpu|hang|reset|guc|wedged|firmware|BERT|APEI|MCE|lockup' | tail -200
 } > "$F" 2>/dev/null
 logger -t freeze-capture "unclean prior boot -> saved $F"
-# eski kayitlari 10 ile sinirla
+# cap old captures at 10
 ls -1t "$OUT"/freeze-*.txt 2>/dev/null | tail -n +11 | xargs -r rm -f

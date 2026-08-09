@@ -13,7 +13,7 @@
 -            currentIndex = -1
 -            recentIndex = -1
 -        }
-+        // dechros: type-to-search devre dışı — yazınca arama tetiklenmesin
++        // dechros: type-to-search disabled — typing should not trigger a search
      }
  
      onCurrentIndexChanged: {

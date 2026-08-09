@@ -1,51 +1,54 @@
 #!/bin/bash
-# CABAL Online (EU) — PlayThisGame — Wine kurulumu (Lunar Lake / KDE Wayland)
+# CABAL Online (EU) — PlayThisGame — Wine setup (Lunar Lake / KDE Wayland)
 #
-# Neden ozel: resmi EU client (cabaleu.playthisgame.com -> 11132014_EU_Setup.exe)
-# 2014 base'li; ilk acilista kendini guncel launcher'a cevirir ve yeni patch/info
-# host'larina (c1eu.cdn / c1eu.info01 .playthisgame.com) gecer. ANCAK
-# c1eu.info01.playthisgame.com DNS'ten silinmis (NXDOMAIN) -> launcher orada
-# takilip "Update Fail" verir. Cozum: o olu host'u 127.0.0.1'e map edip kucuk bir
-# yerel proxy (cabal-patch-proxy.service) ile istekleri canli CDN'e
-# (c1eu.cdn.playthisgame.com) forward etmek. Boylece launcher manifest'i alip
-# tam patch'lenir. GameGuard Wine'da gecer; karakter ekrani icin native d3dx9
-# gerekir; text render icin corefonts+tahoma gerekir.
+# Why this is special: the official EU client (cabaleu.playthisgame.com ->
+# 11132014_EU_Setup.exe) has a 2014 base; on first launch it self-updates to the
+# current launcher and switches to the new patch/info hosts (c1eu.cdn /
+# c1eu.info01 .playthisgame.com). BUT c1eu.info01.playthisgame.com has been
+# removed from DNS (NXDOMAIN) -> the launcher hangs there and shows "Update Fail".
+# Fix: map that dead host to 127.0.0.1 and run a tiny local proxy
+# (cabal-patch-proxy.service) that forwards the requests to the live CDN
+# (c1eu.cdn.playthisgame.com). The launcher then fetches the manifest and patches
+# fully. GameGuard passes under Wine; the character screen needs native d3dx9;
+# text rendering needs corefonts+tahoma.
 set -e
 REPO_DIR="${REPO_DIR:-$(cd "$(dirname "$0")/.." && pwd)}"
 PREFIX="$HOME/Games/cabal-online"
 GAMEDIR="$PREFIX/drive_c/Program Files (x86)/CABAL Online (EU)"
 
-echo "=== 1. Wine + winetricks + 32-bit runtime (multilib gerekli) ==="
+echo "=== 1. Wine + winetricks + 32-bit runtime (multilib required) ==="
 sudo pacman -S --needed --noconfirm wine winetricks wine-mono wine-gecko \
     lib32-gnutls lib32-alsa-lib lib32-alsa-plugins lib32-libpulse \
     lib32-mpg123 lib32-giflib lib32-libjpeg-turbo lib32-openal lib32-libxcomposite
 
-echo "=== 2. Olu info host'unu -> yerel patch proxy'ye yonlendir ==="
-# /etc/hosts kaydi (kalici) + proxy servisi (boot'ta otomatik, :80 -> canli CDN)
+echo "=== 2. Redirect the dead info host -> local patch proxy ==="
+# /etc/hosts entry (persistent) + proxy service (auto on boot, :80 -> live CDN)
 grep -q 'c1eu.info01.playthisgame.com' /etc/hosts || \
     echo '127.0.0.1 c1eu.info01.playthisgame.com' | sudo tee -a /etc/hosts >/dev/null
 sudo systemctl enable --now cabal-patch-proxy.service
 
-echo "=== 3. win64 prefix olustur (wine 11.x new-WoW64: win32 prefix desteklenmez) ==="
+echo "=== 3. Create win64 prefix (wine 11.x new-WoW64: win32 prefix unsupported) ==="
 if [[ ! -d "$PREFIX" ]]; then
     WINEPREFIX="$PREFIX" WINEARCH=win64 WINEDLLOVERRIDES="mscoree,mshtml=" wineboot -u
 fi
 
-echo "=== 4. Fontlar (text render) + native d3dx9/d3dcompiler (karakter ekrani) ==="
+echo "=== 4. Fonts (text render) + native d3dx9/d3dcompiler (character screen) ==="
 WINEPREFIX="$PREFIX" WINEARCH=win64 WINEDLLOVERRIDES="mscoree,mshtml=" \
     winetricks -q corefonts tahoma d3dx9 d3dcompiler_43 d3dcompiler_47
 
 cat <<EOF
 
-=== 5. MANUEL adimlar (otomatiklestirilemez) ===
-  a) cabaleu.playthisgame.com adresine kayit ol / giris yap, client installer'i indir
-     (11132014_EU_Setup.exe, ~2GB).
-  b) Kur:
+=== 5. MANUAL steps (cannot be automated) ===
+  a) Register / log in at cabaleu.playthisgame.com and download the client
+     installer (11132014_EU_Setup.exe, ~2GB).
+  b) Install:
      WINEPREFIX="$PREFIX" WINEARCH=win64 wine ~/Downloads/11132014_EU_Setup.exe
-  c) Launcher'i baslat; proxy sayesinde patch'lenir (v677 -> guncel, ~11GB indirir),
-     "Update Complete" -> START -> PlayThisGame hesabinla giris.
-  Menu girdisi (hi-def logo): user/.local/share/applications/cabal-online-eu.desktop
-  Baslatici: ~/.local/bin/cabal-online-eu.sh  (proxy servisi arka planda otomatik)
+  c) Start the launcher; thanks to the proxy it patches (v677 -> current,
+     downloads ~11GB), "Update Complete" -> START -> log in with your
+     PlayThisGame account.
+  Menu entry (hi-def logo): user/.local/share/applications/cabal-online-eu.desktop
+  Launcher: ~/.local/bin/cabal-online-eu.sh  (proxy service runs in the background)
 
-Not: 11GB oyun verisi repoda tutulmaz; launcher patch'iyle iner.
+Note: the 11GB game data is not tracked in the repo; it downloads via the
+launcher patch.
 EOF

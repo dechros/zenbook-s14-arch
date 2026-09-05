@@ -1,0 +1,12 @@
+[Unit]
+Description=Watch Ollama GPU spillover
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/ollama-gpu-watch.sh
+Restart=always
+RestartSec=60
+
+[Install]
+WantedBy=default.target

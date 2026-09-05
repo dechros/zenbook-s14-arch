@@ -1,0 +1,19 @@
+#!/bin/sh
+# $1 = pre|post, $2 = suspend|hibernate|hybrid-sleep|suspend-then-hibernate
+#
+# pre + hibernate : Modeli bellekten dusur. 22 GB yukluyken hibernate imaji ~27 GB
+#   olur; bosaltinca ~5 GB'a iner (olculdu: 5.5 GB, 3.96 sn, 1382 MB/s).
+#   Normal suspend'de RAM elektrikli kalir, imaj yazilmaz -> bosaltmak gereksiz,
+#   sadece uyanista 22 GB'i diskten tekrar okutur.
+# post : Hibernate sonrasi llama-server runner'i oksuz kaliyor - servis onu unutuyor
+#   (ollama ps bos) ama GPU tahsisini tutuyor, 18 GB bosa gidiyor. Restart temizler.
+case "$1" in
+    pre)
+        case "$2" in
+            hibernate|hybrid-sleep|suspend-then-hibernate) systemctl stop ollama ;;
+        esac
+        ;;
+    post)
+        systemctl restart ollama
+        ;;
+esac

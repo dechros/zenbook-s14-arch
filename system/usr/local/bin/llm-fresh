@@ -1,0 +1,11 @@
+#!/bin/sh
+# Ollama'yi temiz bellekle yeniden baslatir.
+# 20+ GB'lik model iGPU'nun ~20.8 GB butcesine ancak temiz bellekte sigar.
+# Kirli bellekte offload %44'e duser, hiz 2.6 kat azalir (olculdu: 34.4 -> 13.2 tok/s).
+# Kullanim: sudo llm-fresh   (sonra `ollama ps` ile %100 GPU dogrula)
+systemctl stop ollama
+sync
+echo 3 > /proc/sys/vm/drop_caches
+systemctl start ollama
+sleep 5
+echo "ollama hazir ($(systemctl is-active ollama)). Model yuklenince: ollama ps -> %100 GPU olmali."

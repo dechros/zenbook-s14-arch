@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 #
-# ollama-gpu-watch — GPU offload spillover monitor with auto-recovery
+# ollama-gpu-watch: GPU offload spillover monitor with auto-recovery
 #
 # On this machine (Lunar Lake iGPU, shared LPDDR5X) a model that loaded at
 # 100% GPU can later spill layers to the CPU as system memory fragments.
-# Root cause is memory fragmentation, NOT model size — a clean page cache
+# Root cause is memory fragmentation, NOT model size. A clean page cache
 # lets the same model reload fully on the GPU again.
 #
 # This service polls `ollama ps`; when a loaded model is no longer at
@@ -62,7 +62,7 @@ check_once(){
       now=$(date +%s)
       if [ $((now - last_fix)) -ge "$COOLDOWN" ]; then
         log "SPILLOVER: $name ($proc) -> auto-fix via llm-fresh"
-        notify "GPU offload spillover — recovering" "$name is running on CPU ($proc). Defragmenting memory and reloading on GPU."
+        notify "GPU offload spillover: recovering" "$name is running on CPU ($proc). Defragmenting memory and reloading on GPU."
         sudo -n /usr/local/bin/llm-fresh >/dev/null 2>&1 \
           && log "auto-fix OK" \
           || log "auto-fix FAILED (check sudoers)"

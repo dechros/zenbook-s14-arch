@@ -1,0 +1,3 @@
+chromecopy/
+*.log
+__pycache__/

@@ -7,16 +7,19 @@
 # Root cause is memory fragmentation, NOT model size. A clean page cache
 # lets the same model reload fully on the GPU again.
 #
-# This service polls `ollama ps`; when a loaded model is no longer at
-# "100% GPU" it runs `sudo llm-fresh` (drop_caches + ollama restart) to
-# defragment memory and restore full GPU offload. A cooldown prevents a
-# restart loop. Desktop notifications are sent on every spillover event.
+# This service polls `ollama ps` and watches for two failures. A loaded model
+# that is no longer at "100% GPU" has spilled to the CPU. No model loaded while
+# the machine still reports most of its memory in use means the iGPU never
+# handed the memory back, which starves the desktop until the session freezes.
+# Either one runs `sudo llm-fresh` (drop_caches + ollama restart). A cooldown
+# prevents a restart loop. Desktop notifications are sent on every event.
 #
 # Requires: passwordless sudoers entry for /usr/local/bin/llm-fresh.
 
 LOG="$HOME/.local/share/ollama-gpu-watch.log"
 INTERVAL="${WATCH_INTERVAL:-30}"     # seconds between checks
 COOLDOWN="${WATCH_COOLDOWN:-180}"    # min seconds between auto-fixes (loop guard)
+IDLE_HELD_MB="${WATCH_IDLE_HELD_MB:-12000}"  # used memory that counts as "not released"
 mkdir -p "$(dirname "$LOG")" 2>/dev/null || exit 1
 
 log(){ echo "$(date '+%F %T') | $1" >> "$LOG" 2>/dev/null; }
@@ -42,7 +45,26 @@ check_once(){
   local mem map
   mem=$(free -h 2>/dev/null | awk '/^Mem:/{print $3"/"$2}'); [ -z "$mem" ] && mem="n/a"
   map=$(ollama ps 2>/dev/null | awk 'NR>1 && NF>0')
-  [ -z "$map" ] && { log "no model loaded | RAM:$mem"; return 0; }
+  if [ -z "$map" ]; then
+    used=$(awk '/^MemTotal:/{t=$2} /^MemAvailable:/{a=$2} END{print int((t-a)/1024)}' /proc/meminfo)
+    if [ "${used:-0}" -ge "$IDLE_HELD_MB" ]; then
+      now=$(date +%s)
+      if [ $((now - last_fix)) -ge "$COOLDOWN" ]; then
+        log "NOT RELEASED: no model loaded but ${used}MB still in use -> auto-fix via llm-fresh"
+        notify "Memory not released" "No model is loaded yet ${used}MB is still held. Reclaiming."
+        sudo -n /usr/local/bin/llm-fresh >/dev/null 2>&1 \
+          && log "reclaim OK" \
+          || log "reclaim FAILED (check sudoers)"
+        echo "$(date +%s)" > /tmp/.ollama-watch-lastfix
+        last_fix=$(cat /tmp/.ollama-watch-lastfix 2>/dev/null)
+      else
+        log "NOT RELEASED: ${used}MB held - within cooldown, skipped"
+      fi
+    else
+      log "no model loaded | RAM:$mem"
+    fi
+    return 0
+  fi
 
   echo "$map" | while read -r line; do
     # The SIZE field contains a space ("18 GB"), so parse relative to the

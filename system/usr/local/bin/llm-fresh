@@ -1,11 +1,12 @@
 #!/bin/sh
-# Ollama'yi temiz bellekle yeniden baslatir.
-# 20+ GB'lik model iGPU'nun ~20.8 GB butcesine ancak temiz bellekte sigar.
-# Kirli bellekte offload %44'e duser, hiz 2.6 kat azalir (olculdu: 34.4 -> 13.2 tok/s).
-# Kullanim: sudo llm-fresh   (sonra `ollama ps` ile %100 GPU dogrula)
+# Restart ollama with clean memory.
+# A 20+ GB model only fits the iGPU's budget when memory is unfragmented; on a
+# dirty page cache offload drops to 44% and throughput falls 2.6x (measured:
+# 34.4 -> 13.2 tok/s). Dropping the caches also returns memory the iGPU is
+# still holding after a model unloads.
 systemctl stop ollama
 sync
 echo 3 > /proc/sys/vm/drop_caches
 systemctl start ollama
 sleep 5
-echo "ollama hazir ($(systemctl is-active ollama)). Model yuklenince: ollama ps -> %100 GPU olmali."
+echo "ollama is $(systemctl is-active ollama). After a model loads, check: ollama ps -> 100% GPU"

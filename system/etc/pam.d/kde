@@ -1,0 +1,21 @@
+#%PAM-1.0
+
+# Overrides /usr/lib/pam.d/kde. Identical to the packaged file except that the
+# auth stack skips pam_faillock: on resume kscreenlocker_greet fires an
+# authentication request before its PAM worker is ready ("Authentication attempt
+# too soon"), faillock counts that phantom attempt as a failure, and after three
+# suspends the account is locked for 10 minutes -- the correct password is then
+# refused at the lock screen. Console, SSH and sudo keep faillock through their
+# own stacks; only the screen locker is exempted.
+
+-auth      [success=2 default=ignore]  pam_systemd_home.so
+auth       [success=1 default=bad]     pam_unix.so          try_first_pass nullok
+auth       [default=die]               pam_permit.so
+auth       required                    pam_env.so
+auth       required                    pam_permit.so
+
+account    include                     system-local-login
+
+password   include                     system-local-login
+
+session    include                     system-local-login

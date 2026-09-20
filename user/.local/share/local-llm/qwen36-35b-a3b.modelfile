@@ -1,0 +1,23 @@
+FROM q36moebase:latest
+TEMPLATE {{ .Prompt }}
+RENDERER qwen3.5
+PARSER qwen3.5
+
+
+PARAMETER temperature 0.35
+PARAMETER top_k 20
+PARAMETER top_p 0.95
+PARAMETER min_p 0
+PARAMETER presence_penalty 1.5
+PARAMETER num_ctx 65536
+PARAMETER num_predict 4096
+PARAMETER num_batch 256
+PARAMETER num_gpu 99
+PARAMETER typical_p 1
+PARAMETER repeat_penalty 1.1
+PARAMETER repeat_last_n 512
+PARAMETER frequency_penalty 0
+PARAMETER mirostat 0
+PARAMETER mirostat_tau 5
+PARAMETER mirostat_eta 0.1
+PARAMETER seed -1

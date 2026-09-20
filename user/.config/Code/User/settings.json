@@ -1,0 +1,30 @@
+{
+    "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+    "git.confirmSync": false,
+    "claudeCode.initialPermissionMode": "bypassPermissions",
+    "claudeCode.preferredLocation": "panel",
+    "claudeCode.respectGitIgnore": false,
+    "workbench.colorTheme": "Dark+",
+    "claudeCode.selectedModel": "opus",
+    "claudeCode.allowDangerouslySkipPermissions": true,
+    "github.copilot.chat.claudeAgent.allowDangerouslySkipPermissions": true,
+    "claudeCode.hideOnboarding": true,
+    "[markdown]": {
+        "editor.defaultFormatter": "yzhang.markdown-all-in-one"
+    },
+    "git.autofetch": true,
+    "redhat.telemetry.enabled": false,
+    "workbench.editorAssociations": {
+        "*.copilotmd": "vscode.markdown.preview.editor",
+        "{git,gitlens,chat-editing-snapshot-text-model,copilot,git-graph,git-graph-3}:/**/*.qrc": "default",
+        "{git,gitlens,chat-editing-snapshot-text-model,copilot,git-graph,git-graph-3}:/**/*.ui": "default",
+        "*.qrc": "qt-core.qrcEditor"
+    },
+    "editor.unicodeHighlight.ambiguousCharacters": false,
+    "explorer.confirmDelete": false,
+    "terminal.integrated.fontFamily": "MesloLGL Nerd Font Mono",
+    "terminal.integrated.fontSize": 13,
+    "explorer.confirmDragAndDrop": false,
+    "window.confirmSaveUntitledWorkspace": false,
+    "qt-qml.doNotAskForQmllsDownload": true
+}

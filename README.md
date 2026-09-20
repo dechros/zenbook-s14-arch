@@ -23,6 +23,12 @@ Post-install configuration for ASUS Zenbook S14 (UX5406SA) on Arch Linux with KD
 - Locale: English UI with Turkish date, time and currency formats
 - Auto keyboard backlight that inversely tracks screen brightness
 - powertop auto-tune, USB HID autosuspend disabled
+- Local LLM on the iGPU (see `scripts/75-ollama.sh`):
+  - `ttm.conf` raises the iGPU's addressable RAM ceiling to ~26 GB so a large MoE model fits without spilling to the CPU; never lower the context length to fix spillover
+  - One model resident at a time with a 30 minute keep-alive, flash attention and a q8_0 KV cache
+  - `ollama-param-proxy` listens on 11435 and injects the tuned system prompt and sampling settings in front of ollama's `/v1`; opencode points at that port
+  - `ollama-gpu-watch` detects spillover and recovers with `llm-fresh`
+  - The kernel kills ollama before the desktop under memory pressure
 - Lock screen unlock after resume: the i8042 keyboard port is rescanned so the internal keyboard types again, and the `kde` PAM service skips faillock so the greeter's premature authentication request on resume cannot lock the account
 - KDE BreezeDark color scheme, 2880x1800 @120 Hz with 175% scale
 - Hotkey handler service (see `hotkey-handler/`):

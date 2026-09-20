@@ -1,0 +1,30 @@
+{
+    "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+    "git.confirmSync": false,
+    "ai-assistantCode.initialPermissionMode": "bypassPermissions",
+    "ai-assistantCode.preferredLocation": "panel",
+    "ai-assistantCode.respectGitIgnore": false,
+    "workbench.colorTheme": "Dark+",
+    "ai-assistantCode.selectedModel": "opus",
+    "ai-assistantCode.allowDangerouslySkipPermissions": true,
+    "github.copilot.chat.ai-assistantAgent.allowDangerouslySkipPermissions": true,
+    "ai-assistantCode.hideOnboarding": true,
+    "[markdown]": {
+        "editor.defaultFormatter": "yzhang.markdown-all-in-one"
+    },
+    "git.autofetch": true,
+    "redhat.telemetry.enabled": false,
+    "workbench.editorAssociations": {
+        "*.copilotmd": "vscode.markdown.preview.editor",
+        "{git,gitlens,chat-editing-snapshot-text-model,copilot,git-graph,git-graph-3}:/**/*.qrc": "default",
+        "{git,gitlens,chat-editing-snapshot-text-model,copilot,git-graph,git-graph-3}:/**/*.ui": "default",
+        "*.qrc": "qt-core.qrcEditor"
+    },
+    "editor.unicodeHighlight.ambiguousCharacters": false,
+    "explorer.confirmDelete": false,
+    "terminal.integrated.fontFamily": "MesloLGL Nerd Font Mono",
+    "terminal.integrated.fontSize": 13,
+    "explorer.confirmDragAndDrop": false,
+    "window.confirmSaveUntitledWorkspace": false,
+    "qt-qml.doNotAskForQmllsDownload": true
+}

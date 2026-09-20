@@ -1,0 +1,42 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama",
+      "options": {
+        "baseURL": "http://127.0.0.1:11435/v1"
+      },
+      "models": {
+        "huihui_ai/Qwen3.6-abliterated:35b-a3b": {
+          "name": "Qwen3.6-35B-A3B(3B active) \u00b7 64K \u00b7 MoE \u00b7 thinking \u00b7 ~28tok/s",
+          "tools": true,
+          "limit": {
+            "context": 131072,
+            "output": 8192
+          }
+        }
+      }
+    }
+  },
+  "model": "ollama/huihui_ai/Qwen3.6-abliterated:35b-a3b",
+  "permission": {
+    "edit": "allow",
+    "bash": "allow",
+    "read": "allow",
+    "external_directory": "allow",
+    "webfetch": "deny"
+  },
+  "tools": {
+    "todowrite": false,
+    "todoread": false,
+    "webfetch": false,
+    "glob": false,
+    "grep": false,
+    "list": false,
+    "task": false
+  },
+  "instructions": [
+    "/home/dechros/.local/share/local-llm/SYSTEM_PROMPT.txt"
+  ]
+}

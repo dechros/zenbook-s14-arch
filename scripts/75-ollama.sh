@@ -17,6 +17,13 @@ sudo install -Dm644 "$REPO_DIR/system/etc/systemd/system/ollama.service.d/igpu.c
     /etc/systemd/system/ollama.service.d/igpu.conf
 sudo install -Dm644 "$REPO_DIR/system/etc/systemd/system/ollama.service.d/oom.conf" \
     /etc/systemd/system/ollama.service.d/oom.conf
+sudo install -Dm644 "$REPO_DIR/system/etc/systemd/system/ollama.service.d/kv.conf" \
+    /etc/systemd/system/ollama.service.d/kv.conf
+sudo install -Dm644 "$REPO_DIR/system/etc/systemd/system/ollama.service.d/vram.conf" \
+    /etc/systemd/system/ollama.service.d/vram.conf
+
+# iGPU memory ceiling. Needs the module reloaded, so it applies from the next boot.
+sudo install -Dm644 "$REPO_DIR/system/etc/modprobe.d/ttm.conf" /etc/modprobe.d/ttm.conf
 
 # --- llm-fresh helper (clean-memory restart) ---
 sudo install -Dm755 "$REPO_DIR/system/usr/local/bin/llm-fresh" /usr/local/bin/llm-fresh
@@ -37,6 +44,19 @@ sudo usermod -aG render,video "$USER"
 # --- enable ollama service (starts, but NO model is pulled) ---
 sudo systemctl daemon-reload
 sudo systemctl enable --now ollama.service
+
+# --- sampling-parameter proxy: injects SYSTEM_PROMPT.txt and sampling settings
+# --- in front of ollama /v1 on port 11435, which is what opencode talks to ---
+install -Dm644 "$REPO_DIR/user/.local/share/local-llm/SYSTEM_PROMPT.txt" \
+    "$HOME/.local/share/local-llm/SYSTEM_PROMPT.txt"
+install -Dm644 "$REPO_DIR/user/.local/share/local-llm/qwen36-35b-a3b.modelfile" \
+    "$HOME/.local/share/local-llm/qwen36-35b-a3b.modelfile"
+install -Dm755 "$REPO_DIR/user/.local/share/local-llm/param-proxy.py" \
+    "$HOME/.local/share/local-llm/param-proxy.py"
+install -Dm644 "$REPO_DIR/user/.config/systemd/user/ollama-param-proxy.service" \
+    "$HOME/.config/systemd/user/ollama-param-proxy.service"
+systemctl --user daemon-reload
+systemctl --user enable --now ollama-param-proxy.service
 
 # --- GPU spillover watcher (auto-fixes via llm-fresh) ---
 install -Dm755 "$REPO_DIR/user/home/.local/bin/ollama-gpu-watch.sh" \

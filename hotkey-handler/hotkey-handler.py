@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import evdev
+import signal
 import gpiod
 from gpiod.line import Direction, Value
 import glob
@@ -138,6 +139,25 @@ def main():
     caps = dev_kbd.capabilities()
     caps.pop(evdev.ecodes.EV_SYN, None)
     virt_kbd = evdev.UInput(caps, name='hotkey-handler-virtual-kbd')
+    held = set()
+
+    def release_and_exit(_signum=None, _frame=None):
+        # systemd restarts this service on resume. Tearing the virtual keyboard
+        # down while a key is still down delivers that key to whatever has focus,
+        # which on resume is the lock screen: it reads the stray press as a
+        # password attempt and reports a failed login the user never made.
+        for code in held:
+            virt_kbd.write(evdev.ecodes.EV_KEY, code, 0)
+        virt_kbd.syn()
+        virt_kbd.close()
+        try:
+            dev_kbd.ungrab()
+        except OSError:
+            pass
+        raise SystemExit(0)
+
+    signal.signal(signal.SIGTERM, release_and_exit)
+    signal.signal(signal.SIGINT, release_and_exit)
     devices = {dev_wmi.fd: dev_wmi, dev_kbd.fd: dev_kbd}
     meta_held = False
     meta_pending = False
@@ -161,6 +181,7 @@ def main():
                                 if meta_pending:
                                     virt_kbd.write(evdev.ecodes.EV_KEY, evdev.ecodes.KEY_LEFTMETA, 1)
                                     virt_kbd.syn()
+                                    held.add(evdev.ecodes.KEY_LEFTMETA)
                                     meta_pending = False
                                 if not meta_swallowed:
                                     virt_kbd.write_event(event)
@@ -199,6 +220,11 @@ def main():
                             virt_kbd.syn()
                             meta_pending = False
 
+                    if event.type == evdev.ecodes.EV_KEY:
+                        if event.value:
+                            held.add(event.code)
+                        else:
+                            held.discard(event.code)
                     virt_kbd.write_event(event)
                     continue
 

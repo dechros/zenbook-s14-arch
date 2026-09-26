@@ -41,17 +41,13 @@ sudo systemctl enable --now cachyos-rate-mirrors.timer || true
 sudo systemctl enable iwd.service || true
 sudo systemctl mask wpa_supplicant.service || true
 
-# systemd 261 auto-enables systemd-pcrlogin@ (TPM measurement of user records).
-# We don't use measured user records; on this TPM it fails every boot with
-# "No space left on device" (TPM NV full) and shows as a failed unit. Mask it.
-# (Unrelated to TPM2 disk unlock, which uses boot-stack PCRs, not pcrlogin.)
+# The disk is not encrypted, so none of systemd's measured-boot NvPCR work has a
+# consumer here. On this TPM it also cannot succeed: the NV space is full, and
+# every unit that defines or extends an NvPCR fails on every boot. Mask those.
+# systemd-tpm2-setup still runs and completes; it only touches the SRK.
 sudo systemctl mask systemd-pcrlogin@.service || true
-# systemd 262 adds systemd-pcrproduct (measures the product UUID into an NvPCR).
-# Same TPM, same full NV space, same failure on every boot. Nothing depends on
-# it. systemd-tpm2-setup-early also reports failure for the same NvPCR reason
-# but is left alone: its SRK setup is what TPM2 LUKS enrollment relies on, and
-# systemd-tpm2-setup completes that job successfully.
 sudo systemctl mask systemd-pcrproduct.service || true
+sudo systemctl mask systemd-tpm2-setup-early.service || true
 
 # freeze-capture: CS:GO hard-freeze diagnosis (suspected drm/xe #7513). On boot,
 # if the previous boot did not shut down cleanly, it saves that boot's xe/drm logs

@@ -46,6 +46,12 @@ sudo systemctl mask wpa_supplicant.service || true
 # "No space left on device" (TPM NV full) and shows as a failed unit. Mask it.
 # (Unrelated to TPM2 disk unlock, which uses boot-stack PCRs, not pcrlogin.)
 sudo systemctl mask systemd-pcrlogin@.service || true
+# systemd 262 adds systemd-pcrproduct (measures the product UUID into an NvPCR).
+# Same TPM, same full NV space, same failure on every boot. Nothing depends on
+# it. systemd-tpm2-setup-early also reports failure for the same NvPCR reason
+# but is left alone: its SRK setup is what TPM2 LUKS enrollment relies on, and
+# systemd-tpm2-setup completes that job successfully.
+sudo systemctl mask systemd-pcrproduct.service || true
 
 # freeze-capture: CS:GO hard-freeze diagnosis (suspected drm/xe #7513). On boot,
 # if the previous boot did not shut down cleanly, it saves that boot's xe/drm logs

@@ -27,10 +27,11 @@ sudo udevadm trigger
 sudo systemctl enable anydesk.service || true
 sudo systemctl enable anydesk-watchdog.timer || true
 
-# mirror auto-maintenance: keep both repos' mirrorlists ranked by speed so
-# updates don't fail on a slow mirror. reflector.timer (Arch, weekly, config in
-# /etc/xdg/reflector/reflector.conf) + cachyos-rate-mirrors.timer (CachyOS).
-sudo systemctl enable --now reflector.timer || true
+# Mirror maintenance, the way CachyOS does it: cachyos-rate-mirrors ranks the
+# Arch, CachyOS and v3 mirrorlists on its own timer and is the only owner of
+# them. reflector writes the same /etc/pacman.d/mirrorlist, so CachyOS's pacman
+# hook disables its timer on install; enabling it again makes the two fight.
+sudo systemctl disable --now reflector.timer 2>/dev/null || true
 sudo systemctl enable --now cachyos-rate-mirrors.timer || true
 
 # WiFi backend = iwd (config: NetworkManager/conf.d/wifi-backend.conf). With

@@ -27,7 +27,7 @@ Post-install configuration for ASUS Zenbook S14 (UX5406SA) on Arch Linux with KD
 - KDE BreezeDark color scheme, 2880x1800 @120 Hz with 175% scale
 - Hotkey handler service (see `hotkey-handler/`):
   - Camera key toggles USB bind with GPIO LED and an OSD
-  - Copilot key (F23) launches, focuses, minimizes or restores ai-assistant Code in Konsole
+  - Copilot key (F23) launches, focuses, minimizes or restores the AI terminal window in Konsole
   - Fn+F7 opens the KScreen display configuration OSD and auto-hides after 3 seconds
   - Fn+F8 opens the Plasma emoji selector
   - Meta+F opens KRunner

@@ -97,8 +97,8 @@ def run_as_user(cmd):
     except:
         pass
 
-def toggle_ai-assistant():
-    run_as_user(['/usr/local/bin/toggle-ai-assistant.sh'])
+def toggle_ai_terminal():
+    run_as_user(['/usr/local/bin/toggle-ai-terminal.sh'])
 
 def launch_emoji():
     run_as_user(['qdbus6', 'org.kde.kglobalaccel',
@@ -212,7 +212,7 @@ def main():
 
                         if code == evdev.ecodes.KEY_F23:
                             if val == 1 and user_logged_in():
-                                toggle_ai-assistant()
+                                toggle_ai_terminal()
                             continue
 
                         if meta_pending and val == 1:

@@ -1,14 +1,7 @@
 {
     "github.copilot.chat.codeGeneration.useInstructionFiles": true,
     "git.confirmSync": false,
-    "ai-assistantCode.initialPermissionMode": "bypassPermissions",
-    "ai-assistantCode.preferredLocation": "panel",
-    "ai-assistantCode.respectGitIgnore": false,
     "workbench.colorTheme": "Dark+",
-    "ai-assistantCode.selectedModel": "opus",
-    "ai-assistantCode.allowDangerouslySkipPermissions": true,
-    "github.copilot.chat.ai-assistantAgent.allowDangerouslySkipPermissions": true,
-    "ai-assistantCode.hideOnboarding": true,
     "[markdown]": {
         "editor.defaultFormatter": "yzhang.markdown-all-in-one"
     },

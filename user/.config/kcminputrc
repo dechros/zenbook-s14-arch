@@ -1,0 +1,19 @@
+[Libinput][10248][536][ASUF1208:00 2808:0218 Mouse]
+PointerAcceleration=0.000
+PointerAccelerationProfile=1
+ScrollFactor=0.75
+
+[Libinput][10248][536][ASUF1208:00 2808:0218 Touchpad]
+NaturalScroll=true
+PointerAcceleration=0.500
+PointerAccelerationProfile=1
+ScrollFactor=0.08
+
+[Libinput][1133][16500][Logitech G305]
+PointerAcceleration=0.600
+PointerAccelerationProfile=1
+ScrollFactor=1
+
+[Mouse]
+cursorSize=22
+cursorTheme=Bibata-Modern-Classic

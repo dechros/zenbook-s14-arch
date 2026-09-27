@@ -21,6 +21,16 @@ cp "$REPO_DIR/user/.local/share/icons/"* "$USER_HOME/.local/share/icons/"
 cp "$REPO_DIR/user/.local/share/konsole/"* "$USER_HOME/.local/share/konsole/"
 # anydesk.desktop override: HiDPI scaling fix (GDK_SCALE=1, remote ekrani doldursun)
 cp "$REPO_DIR/user/.local/share/applications/"* "$USER_HOME/.local/share/applications/"
+echo "=== Scroll speed: Konsole fast, other apps slower ==="
+# Mouse factor must stay >= 1: below 1 Konsole reports a wheel event to TUI apps
+# (Claude Code) only every second notch.
+kwriteconfig6 --file kcminputrc --group Libinput --group 1133 --group 16500 --group "Logitech G305" --key ScrollFactor 1
+kwriteconfig6 --file kcminputrc --group Libinput --group 10248 --group 536 --group "ASUF1208:00 2808:0218 Touchpad" --key ScrollFactor 0.08
+# Qt/KDE apps: 2 lines per notch. Konsole reads its own value from
+# ~/.config/konsole-scroll/kdeglobals via XDG_CONFIG_DIRS in its launchers.
+kwriteconfig6 --file kdeglobals --group KDE --key WheelScrollLines 2
+sed -E "s#^Exec=konsole#Exec=env XDG_CONFIG_DIRS=$USER_HOME/.config/konsole-scroll:$USER_HOME/.config:/etc/xdg konsole#" \
+    /usr/share/applications/org.kde.konsole.desktop > "$USER_HOME/.local/share/applications/org.kde.konsole.desktop"
 update-desktop-database "$USER_HOME/.local/share/applications" 2>/dev/null || true
 mkdir -p "$USER_HOME/.local/share/easyeffects/output"
 cp "$REPO_DIR/user/.local/share/easyeffects/output/"*.json "$USER_HOME/.local/share/easyeffects/output/"

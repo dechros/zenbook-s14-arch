@@ -16,3 +16,6 @@ else
     echo "$CMDLINE xe.enable_psr=0" | sudo tee /etc/kernel/cmdline >/dev/null
     sudo mkinitcpio -p linux-cachyos
 fi
+
+# iGPU access for user-space compute and video (render/video groups).
+sudo usermod -aG render,video "$USER"

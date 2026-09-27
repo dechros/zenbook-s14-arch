@@ -27,7 +27,7 @@ sudo pacman -S --needed --noconfirm git \
     zsh-autosuggestions zsh-syntax-highlighting zsh-history-substring-search \
     github-cli gwenview haruna mattermost-desktop vesktop fastfetch \
     jq tree unzip zip 7zip rsync tmux fzf ripgrep fd bat eza wget \
-    htop nano \
+    htop nano opencode wl-clipboard \
     man-db man-pages xdg-utils \
     pacman-contrib reflector smartmontools ufw \
     kdeconnect \

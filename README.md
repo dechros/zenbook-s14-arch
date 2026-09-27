@@ -17,7 +17,7 @@ Post-install configuration for ASUS Zenbook S14 (UX5406SA) on Arch Linux with KD
 - `wireless-regdb` so Wi-Fi 7 6 GHz band is usable
 - KDE Plasma tray, display, Bluetooth, GTK theme and Window Title applet
 - Konsole profile with MesloLGS Nerd Font 10pt and a dark colorscheme
-- Scroll speed: Konsole scrolls 18 lines per mouse notch through its own `kdeglobals` (`~/.config/konsole-scroll`, loaded via `XDG_CONFIG_DIRS` in its launcher), other Qt apps 2 lines; G305 scroll factor 1 (below 1 drops every other notch in TUI apps), touchpad 0.08. The AI terminal starts Claude Code with `CLAUDE_CODE_SCROLL_SPEED=5`
+- Scroll speed: Konsole scrolls 18 lines per mouse notch through its own `kdeglobals` (`~/.config/konsole-scroll`, loaded via `XDG_CONFIG_DIRS` in its launcher), other Qt apps 1 line; G305 scroll factor 1 (below 1 drops every other notch in TUI apps), touchpad 0.08. The AI terminal starts Claude Code with `CLAUDE_CODE_SCROLL_SPEED=5`
 - Zsh, oh-my-zsh and Powerlevel10k; PATH includes language toolchain bins
 - Chrome flags for Wayland and `--password-store=basic` (KWallet disabled)
 - Electron Wayland hint and system default shell via `/etc/environment`

@@ -19,7 +19,8 @@ Post-install configuration for ASUS Zenbook S14 (UX5406SA) on Arch Linux with KD
 - Konsole profile with MesloLGS Nerd Font 10pt and a dark colorscheme
 - Scroll speed: Konsole scrolls 18 lines per mouse notch through its own `kdeglobals` (`~/.config/konsole-scroll`, loaded via `XDG_CONFIG_DIRS` in its launcher), other Qt apps 1 line; Mouse and touchpad settings live in `user/.config/kcminputrc`: flat acceleration, G305 pointer speed 0.6 and scroll factor 1 (below 1 drops every other notch in TUI apps), touchpad pointer speed 0.5, scroll factor 0.08 and natural scrolling. The AI terminal starts Claude Code with `CLAUDE_CODE_SCROLL_SPEED=5`
 - Zsh, oh-my-zsh and Powerlevel10k; PATH includes language toolchain bins
-- Chrome flags for Wayland and `--password-store=basic` (KWallet disabled)
+- No keyring anywhere: KWallet disabled, `kwalletd6` and the kwallet Secret portal blocked from D-Bus activation, the portal Secret interface set to `none`; Chrome and Electron use `--password-store=basic`, and Chrome's secret-portal key provider is disabled so the sync passphrase survives restarts
+- Chrome flags for Wayland
 - Electron Wayland hint and system default shell via `/etc/environment`
 - Locale: English UI with Turkish date, time and currency formats
 - Auto keyboard backlight that inversely tracks screen brightness

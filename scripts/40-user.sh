@@ -19,6 +19,10 @@ mkdir -p "$USER_HOME/.config" \
 cp -r "$REPO_DIR/user/.config/"* "$USER_HOME/.config/"
 cp "$REPO_DIR/user/.local/share/icons/"* "$USER_HOME/.local/share/icons/"
 cp "$REPO_DIR/user/.local/share/konsole/"* "$USER_HOME/.local/share/konsole/"
+# No keyring: kwalletd and the kwallet Secret portal can never be D-Bus activated,
+# the portal exposes no Secret interface, Chrome/Electron use the basic store.
+mkdir -p "$USER_HOME/.local/share/dbus-1/services"
+cp "$REPO_DIR/user/.local/share/dbus-1/services/"* "$USER_HOME/.local/share/dbus-1/services/"
 # anydesk.desktop override: HiDPI scaling fix (GDK_SCALE=1, remote ekrani doldursun)
 cp "$REPO_DIR/user/.local/share/applications/"* "$USER_HOME/.local/share/applications/"
 echo "=== Scroll speed: Konsole fast, other apps slower ==="

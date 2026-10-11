@@ -41,7 +41,7 @@ Post-install configuration for ASUS Zenbook S14 (UX5406SA) on Arch Linux with KD
 install.sh              main entry, runs scripts/* in order
 scripts/                install phases (firmware, packages, system, hotkey, user, env, display)
 hotkey-handler/         source for the hotkey systemd service
-appgrid/                patches for the AppGrid launcher (clean grid customization)
+appgrid/                QML patches for the AppGrid launcher (clean grid build)
 system/                 files copied to /
 user/                   files copied to $HOME
 ```
@@ -55,3 +55,18 @@ cd zenbook-s14-arch
 ```
 
 Reboot when finished.
+
+## AppGrid launcher (clean grid)
+
+Since AppGrid 1.9.3 the QML is compiled into the plugin `.so`, so the old
+`~/.local/share/plasma/plasmoids` override no longer works. `scripts/45-appgrid.sh`
+now rebuilds the AUR package `plasma6-applets-appgrid` with the patches in
+`appgrid/` (`makepkg -o`, `patch`, `makepkg -e -si`). Result: no search bar,
+no category bar, no dividers or border, no top header gap, and typing does not
+start a search. The script also deletes the stale `~/.local` override.
+
+To keep `yay`/`pacman -Syu` from replacing the patched build, the script adds
+`IgnorePkg = plasma6-applets-appgrid` under `[options]` in `/etc/pacman.conf`
+(only once). To pick up a new upstream release, re-run the script (re-create
+the patches if they fail), or remove the line to return to the stock package.
+Restart Plasma afterwards: `systemctl --user restart plasma-plasmashell`.

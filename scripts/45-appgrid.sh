@@ -1,35 +1,50 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 REPO_DIR="${REPO_DIR:-$(cd "$(dirname "$0")/.." && pwd)}"
 
-# AppGrid launcher customization (dechros): clean grid — no search bar, no
+# AppGrid launcher customization (dechros): clean grid. No search bar, no
 # category bar, no dividers/border, no top header gap, typing doesn't trigger
-# search. We don't fork or vendor the (GPL, ~100-file C++/QML) plugin; instead
-# we copy the installed system plasmoid into the user override dir and apply
-# small patches. The user copy (~/.local) shadows /usr/share, so it survives
-# package updates and is reverted by simply deleting the override dir.
+# search. Since 1.9.3 the QML is compiled into the plugin .so, so a ~/.local
+# override no longer works. We rebuild the AUR package with our patches
+# (makepkg -o; patch; makepkg -e -si) and pin it with IgnorePkg.
 
-SYS=/usr/share/plasma/plasmoids/dev.xarbit.appgrid
-LOC="$HOME/.local/share/plasma/plasmoids/dev.xarbit.appgrid"
+PKG=plasma6-applets-appgrid
+BUILD_DIR="${BUILD_DIR:-$(mktemp -d -t appgrid-build.XXXXXX)}"
 
-if [[ ! -d "$SYS" ]]; then
-    echo "=== AppGrid not installed (plasma6-applets-appgrid), skipping ==="
-    exit 0
-fi
+echo "=== Building $PKG with clean-grid patches in $BUILD_DIR ==="
+cd "$BUILD_DIR"
+rm -rf "$PKG"
+git clone -q "https://aur.archlinux.org/$PKG.git"
+cd "$PKG"
 
-echo "=== Deploying AppGrid customization to user override ==="
-rm -rf "$LOC"
-mkdir -p "$(dirname "$LOC")"
-cp -r "$SYS" "$LOC"
+# Fetch + extract sources, install build deps (no build yet).
+makepkg -o -s --noconfirm
 
-for f in GridPanel.qml AppGridView.qml; do
-    if patch -s "$LOC/contents/ui/$f" < "$REPO_DIR/appgrid/$f.patch"; then
-        echo "  patched $f"
+UI_DIR=$(echo src/plasma6-applet-appgrid-*/package/contents/ui)
+for p in GridPanel AppGridView CategoryGridView; do
+    if patch -p1 -N -d "$UI_DIR" < "$REPO_DIR/appgrid/$p.qml.patch"; then
+        echo "  patched $p.qml"
     else
-        echo "  WARN: $f patch failed — upstream likely changed; re-create the patch."
+        echo "ERROR: $p.qml patch failed; upstream changed, re-create the patch." >&2
+        exit 1
     fi
 done
 
-# Drop stale compiled QML so the override is picked up on next plasmashell start.
+# Build from the patched tree (-e: skip extraction) and install.
+makepkg -e -si --noconfirm
+
+# Old ~/.local override is ignored since 1.9.3 and only confuses; remove it.
+rm -rf "$HOME/.local/share/plasma/plasmoids/dev.xarbit.appgrid"
 rm -rf "$HOME/.cache/plasmashell/qmlcache" 2>/dev/null || true
-echo "=== Done. Log out/in or restart plasmashell to apply. ==="
+
+# Keep yay/pacman -Syu from replacing the patched build.
+if ! grep -qE "^\s*IgnorePkg\s*=.*\b$PKG\b" /etc/pacman.conf; then
+    if grep -qE '^\s*IgnorePkg\s*=' /etc/pacman.conf; then
+        sudo sed -i -E "/^\s*IgnorePkg\s*=/ s/$/ $PKG/" /etc/pacman.conf
+    else
+        sudo sed -i "/^\[options\]/a IgnorePkg = $PKG" /etc/pacman.conf
+    fi
+    echo "  added $PKG to IgnorePkg in /etc/pacman.conf"
+fi
+
+echo "=== Done. Restart plasmashell to apply: systemctl --user restart plasma-plasmashell ==="

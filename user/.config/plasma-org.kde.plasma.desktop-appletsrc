@@ -4,10 +4,11 @@ RightButton;NoModifier=org.kde.contextmenu
 [ActionPlugins][1]
 RightButton;NoModifier=org.kde.contextmenu
 
+[AppletGlobals][dev.xarbit.appgrid.panel]
+appgridPopupHeight=611
+appgridPopupWidth=646
+
 [Containments][1]
-ItemGeometries-1646x1029=
-ItemGeometries-1800x1125=
-ItemGeometriesHorizontal=
 activityId=8fce2e7f-8256-48d3-b605-223ab7018640
 formfactor=0
 immutability=1
@@ -17,11 +18,11 @@ plugin=org.kde.plasma.folder
 wallpaperplugin=org.kde.image
 
 [Containments][1][ConfigDialog]
-DialogHeight=630
-DialogWidth=810
+DialogHeight=621
+DialogWidth=720
 
 [Containments][1][Wallpaper][org.kde.image][General]
-Image=file:///home/dechros/.local/share/wallpapers/Otto/
+Image=file:///home/dechros/Pictures/Wallpapers/daniel-leone-v7daTKlZzaw-unsplash.jpg
 SlidePaths=/home/dechros/.local/share/wallpapers/,/usr/share/wallpapers/
 
 [Containments][2]
@@ -33,31 +34,44 @@ location=4
 plugin=org.kde.panel
 wallpaperplugin=org.kde.image
 
-[Containments][2][Applets][48]
-immutability=1
-plugin=org.kde.plasma.trash
-
-[Containments][2][Applets][5]
+[Containments][2][Applets][62]
 immutability=1
 plugin=org.kde.plasma.icontasks
 
-[Containments][2][Applets][5][Configuration][General]
-launchers=preferred://filemanager,applications:google-chrome.desktop,applications:org.kde.konsole.desktop,applications:systemsettings.desktop
+[Containments][2][Applets][62][Configuration]
+popupHeight=400
+popupWidth=560
 
-[Containments][2][Applets][59]
+[Containments][2][Applets][62][Configuration][ConfigDialog]
+DialogHeight=630
+DialogWidth=810
+
+[Containments][2][Applets][62][Configuration][General]
+indicateAudioStreams=false
+launchers=applications:org.kde.dolphin.desktop,applications:google-chrome.desktop,applications:org.kde.konsole.desktop,applications:com.microsoft.VSCode.desktop,applications:vesktop.desktop,applications:steam.desktop,applications:systemsettings.desktop
+
+[Containments][2][Applets][76]
+immutability=1
+plugin=org.kde.plasma.icon
+
+[Containments][2][Applets][76][Configuration]
+localPath=/home/dechros/.local/share/plasma_icons/trash:⁄.desktop
+url=trash:/
+
+[Containments][2][Applets][80]
 immutability=1
 plugin=dev.xarbit.appgrid.panel
 
-[Containments][2][Applets][59][Configuration]
+[Containments][2][Applets][80][Configuration]
 popupHeight=611
 popupSizeOwner=appgrid:646x611
 popupWidth=646
 
-[Containments][2][Applets][59][Configuration][ConfigDialog]
+[Containments][2][Applets][80][Configuration][ConfigDialog]
 DialogHeight=630
 DialogWidth=810
 
-[Containments][2][Applets][59][Configuration][General]
+[Containments][2][Applets][80][Configuration][General]
 favoritesPortedToKAstats=true
 gridColumns=6
 gridRows=6
@@ -66,6 +80,7 @@ headerActionsMigrated=true
 hoverAnimation=0
 icon=view-app-grid-symbolic
 iconMigratedFrom17=true
+knownApps=org.kde.dolphin.desktop,systemsettings.desktop
 powerButtonsMigrated=true
 showCategoryBar=false
 showDividers=false
@@ -76,7 +91,7 @@ sortMode=0
 terminalShell=/usr/bin/zsh
 
 [Containments][2][General]
-AppletOrder=59;5;48
+AppletOrder=80;62;76
 
 [Containments][20]
 activityId=
@@ -106,11 +121,11 @@ popupWidth=560
 [Containments][20][Applets][23][Configuration][Appearance]
 autoFontAndSize=false
 boldText=true
-customDateFormat=dddd d
+customDateFormat=ddd MMM d
 dateDisplayFormat=BesideTime
 dateFormat=custom
 fontFamily=Noto Sans
-fontSize=6
+fontSize=8
 fontStyleName=Bold
 fontWeight=700
 use24hFormat=2
@@ -129,6 +144,7 @@ popupWidth=432
 
 [Containments][20][Applets][24][Configuration][Appearance]
 altTxt=Arch Linux
+fontSize=13
 isBold=true
 midSpace=6
 txt=%a\s
@@ -152,7 +168,7 @@ plugin=org.kde.plasma.minimizeall
 activityId=
 formfactor=0
 immutability=1
-lastScreen=-1
+lastScreen=0
 location=0
 plugin=org.kde.plasma.systemtray
 popupHeight=432
@@ -216,6 +232,8 @@ plugin=org.kde.plasma.weather
 
 [Containments][20][Applets][27][Applets][49][Configuration][Appearance]
 showHumidityInTooltip=false
+showTemperatureInBadge=true
+showTemperatureInCompactMode=true
 showWindInTooltip=false
 
 [Containments][20][Applets][27][Applets][49][Configuration][ConfigDialog]
@@ -241,9 +259,22 @@ plugin=org.kde.plasma.keyboardindicator
 immutability=1
 plugin=org.kde.plasma.mediacontroller
 
+[Containments][20][Applets][27][Applets][77]
+immutability=1
+plugin=org.kde.kdeconnect
+
+[Containments][20][Applets][27][Applets][78]
+immutability=1
+plugin=org.kde.plasma.dwellclicker
+
+[Containments][20][Applets][27][ConfigDialog]
+DialogHeight=630
+DialogWidth=810
+
 [Containments][20][Applets][27][General]
-extraItems=org.kde.plasma.devicenotifier,org.kde.plasma.keyboardlayout,org.kde.plasma.mediacontroller,org.kde.plasma.brightness,org.kde.plasma.volume,org.kde.plasma.battery,org.kde.plasma.notifications,org.kde.plasma.bluetooth,org.kde.plasma.cameraindicator,org.kde.plasma.clipboard,org.kde.plasma.manage-inputmethod,org.kde.kscreen,org.kde.plasma.networkmanagement,org.kde.plasma.weather,org.kde.plasma.keyboardindicator
-knownItems=org.kde.plasma.devicenotifier,org.kde.plasma.keyboardlayout,org.kde.plasma.mediacontroller,org.kde.plasma.brightness,org.kde.plasma.volume,org.kde.plasma.battery,org.kde.plasma.notifications,org.kde.plasma.bluetooth,org.kde.plasma.cameraindicator,org.kde.plasma.clipboard,org.kde.plasma.manage-inputmethod,org.kde.kscreen,org.kde.plasma.networkmanagement,org.kde.plasma.weather,org.kde.plasma.keyboardindicator
+extraItems=org.kde.plasma.devicenotifier,org.kde.plasma.keyboardlayout,org.kde.plasma.mediacontroller,org.kde.plasma.brightness,org.kde.plasma.volume,org.kde.plasma.notifications,org.kde.plasma.bluetooth,org.kde.plasma.cameraindicator,org.kde.plasma.clipboard,org.kde.plasma.manage-inputmethod,org.kde.kscreen,org.kde.plasma.networkmanagement,org.kde.plasma.weather,org.kde.plasma.keyboardindicator,org.kde.plasma.battery,org.kde.kdeconnect,org.kde.plasma.dwellclicker
+knownItems=org.kde.plasma.devicenotifier,org.kde.plasma.keyboardlayout,org.kde.plasma.mediacontroller,org.kde.plasma.brightness,org.kde.plasma.volume,org.kde.plasma.battery,org.kde.plasma.notifications,org.kde.plasma.bluetooth,org.kde.plasma.cameraindicator,org.kde.plasma.clipboard,org.kde.plasma.manage-inputmethod,org.kde.kscreen,org.kde.plasma.networkmanagement,org.kde.plasma.weather,org.kde.plasma.keyboardindicator,org.kde.kdeconnect,org.kde.plasma.dwellclicker
+shownItems=org.kde.plasma.battery
 
 [Containments][20][Applets][55]
 immutability=1
@@ -264,30 +295,30 @@ mouseDragUpAction=Disabled,Disabled
 mouseWheelDownAction=Disabled,Disabled
 mouseWheelUpAction=Disabled,Disabled
 pressHoldAction=Disabled,Disabled
-screenWidth=1646
+screenWidth=1440
 showHoverBg=false
 showTooltip=false
 singleClickAction=Disabled,Disabled
 
-[Containments][20][Applets][58]
+[Containments][20][Applets][63]
 immutability=1
-plugin=org.kde.plasma.shutdownorswitch
+plugin=com.dechros.arch-power-switch
 
-[Containments][20][Applets][58][Configuration]
-popupHeight=205
+[Containments][20][Applets][63][Configuration]
+popupHeight=171
 popupWidth=216
 
-[Containments][20][Applets][58][Configuration][ConfigDialog]
+[Containments][20][Applets][63][Configuration][ConfigDialog]
 DialogHeight=630
 DialogWidth=810
 
-[Containments][20][Applets][58][Configuration][General]
-icon=/home/dechros/.local/share/icons/arch-white.svg
+[Containments][20][Applets][63][Configuration][General]
 showHibernate=true
+showLockScreen=false
 showSuspend=true
 
 [Containments][20][General]
-AppletOrder=58;24;21;55;27;23;26
+AppletOrder=63;24;21;55;27;23;26
 
 [ScreenMapping]
 itemsOnDisabledScreens=

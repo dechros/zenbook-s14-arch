@@ -46,22 +46,34 @@ launchers=preferred://filemanager,applications:google-chrome.desktop,application
 
 [Containments][2][Applets][59]
 immutability=1
-plugin=org.kde.plasma.kickerdash
+plugin=dev.xarbit.appgrid.panel
 
 [Containments][2][Applets][59][Configuration]
-popupHeight=509
-popupWidth=647
+popupHeight=611
+popupSizeOwner=appgrid:646x611
+popupWidth=646
 
 [Containments][2][Applets][59][Configuration][ConfigDialog]
 DialogHeight=630
 DialogWidth=810
 
 [Containments][2][Applets][59][Configuration][General]
-customButtonImage=show-grid
 favoritesPortedToKAstats=true
+gridColumns=6
+gridRows=6
+headerActions=sleep:off,restart:off,shutdown:off,lock:off,logout:off,switchuser:off
+headerActionsMigrated=true
+hoverAnimation=0
+icon=view-app-grid-symbolic
+iconMigratedFrom17=true
+powerButtonsMigrated=true
+showCategoryBar=false
+showDividers=false
+showFavoritesOnly=false
+showNewAppBadge=false
 showRecentApps=false
-showRecentDocs=false
-useCustomButtonImage=true
+sortMode=0
+terminalShell=/usr/bin/zsh
 
 [Containments][2][General]
 AppletOrder=59;5;48

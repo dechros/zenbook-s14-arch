@@ -23,7 +23,7 @@ cp "$REPO_DIR/user/.local/share/konsole/"* "$USER_HOME/.local/share/konsole/"
 # the portal exposes no Secret interface, Chrome/Electron use the basic store.
 mkdir -p "$USER_HOME/.local/share/dbus-1/services"
 cp "$REPO_DIR/user/.local/share/dbus-1/services/"* "$USER_HOME/.local/share/dbus-1/services/"
-# anydesk.desktop override: HiDPI scaling fix (GDK_SCALE=1, remote ekrani doldursun)
+# .desktop overrides
 cp "$REPO_DIR/user/.local/share/applications/"* "$USER_HOME/.local/share/applications/"
 echo "=== Scroll speed: Konsole fast, other apps slower ==="
 # Pointer speed and scroll factors per device come from user/.config/kcminputrc.

@@ -1,6 +1,6 @@
 # zenbook-s14-arch
 
-Post-install configuration for ASUS Zenbook S14 (UX5406SA) on Arch Linux with KDE Plasma Wayland.
+Post-install configuration for ASUS Zenbook S14 (UX5406SA) on CachyOS (Arch Linux) with KDE Plasma Wayland.
 
 ## Hardware
 
@@ -22,16 +22,18 @@ Post-install configuration for ASUS Zenbook S14 (UX5406SA) on Arch Linux with KD
 - No keyring anywhere: KWallet disabled, `kwalletd6` and the kwallet Secret portal blocked from D-Bus activation, the portal Secret interface set to `none`; Chrome and Electron use `--password-store=basic`, and Chrome's secret-portal key provider is disabled so the sync passphrase survives restarts
 - Chrome flags for Wayland
 - Electron Wayland hint and system default shell via `/etc/environment`
-- Locale: English UI with Turkish date, time and currency formats
-- Auto keyboard backlight that inversely tracks screen brightness
-- powertop auto-tune, USB HID autosuspend disabled
+- Locale: English UI with Turkish currency, number and measurement formats; the Plasma session overrides the time format to `en_GB`
+- Keyboard backlight level saved before suspend and restored after resume
+- USB HID autosuspend disabled; a `powertop.service` auto-tune unit is installed but not enabled
+- `fwupd` with its refresh timer for LVFS firmware updates, Intel GPU/NPU userspace (VPL, Level Zero, NPU driver, media tools) and `asusctl`
+- `zapret` DPI bypass with forced Cloudflare DNS, hibernate resume setup and Intel graphics tuning
 - Lock screen unlock after resume: the i8042 keyboard port is rescanned so the internal keyboard types again, and the `kde` PAM service skips faillock so the greeter's premature authentication request on resume cannot lock the account
 - KDE BreezeDark color scheme, 2880x1800 @120 Hz with 175% scale
 - Hotkey handler service (see `hotkey-handler/`):
   - Camera key toggles USB bind with GPIO LED and an OSD
   - Copilot key (F23) launches, focuses, minimizes or restores the AI terminal window in Konsole
-  - Fn+F7 opens the KScreen display configuration OSD and auto-hides after 3 seconds
-  - Fn+F8 opens the Plasma emoji selector
+  - Meta+P (Fn+F7) opens the KScreen display configuration OSD and auto-hides after 3 seconds
+  - Meta+. (Fn+F8) opens the Plasma emoji selector
   - Meta+F opens KRunner
   - Meta+P, Meta+. and Meta+F are consumed so they do not leak to focused apps
 
@@ -39,7 +41,7 @@ Post-install configuration for ASUS Zenbook S14 (UX5406SA) on Arch Linux with KD
 
 ```
 install.sh              main entry, runs scripts/* in order
-scripts/                install phases (firmware, packages, system, hotkey, user, env, display)
+scripts/                install phases (firmware, CachyOS, packages, system, hotkey, zapret, user, env, display, graphics, hibernate, optional Cabal Online)
 hotkey-handler/         source for the hotkey systemd service
 system/                 files copied to /
 user/                   files copied to $HOME

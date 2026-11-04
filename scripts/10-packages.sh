@@ -16,7 +16,7 @@ sudo pacman -S --needed --noconfirm git \
     intel-media-driver vpl-gpu-rt libva-utils intel-gpu-tools \
     level-zero-loader intel-npu-driver \
     fwupd asusctl \
-    plasma-nm plasma-pa kscreen bluedevil kde-gtk-config breeze-gtk kwallet-pam \
+    plasma-nm plasma-pa kscreen bluedevil kde-gtk-config breeze-gtk \
     plasma-systemmonitor spectacle papirus-icon-theme \
     wireless-regdb \
     networkmanager iwd \

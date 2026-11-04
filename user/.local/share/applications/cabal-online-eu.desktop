@@ -2,7 +2,7 @@
 Type=Application
 Name=CABAL Online (EU)
 Comment=CABAL Online EU - The Revolution of Action
-Exec=/home/dechros/.local/bin/cabal-online-eu.sh
+Exec=sh -c "$HOME/.local/bin/cabal-online-eu.sh"
 Icon=cabal-online-eu
 Terminal=false
 Categories=Game;RolePlaying;

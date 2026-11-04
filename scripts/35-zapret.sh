@@ -2,17 +2,17 @@
 set -e
 REPO_DIR="${REPO_DIR:-$(cd "$(dirname "$0")/.." && pwd)}"
 
-# DPI bypass for Turkish ISP (Türkcell Superonline) blocking Discord, etc.
+# DPI bypass for a Turkish ISP that blocks Discord, etc.
 # - zapret-git from AUR (nfqws DPI desync)
 # - Cloudflare DNS to defeat ISP DNS hijacking
-# - working NFQWS strategy for Superonline: fakedsplit + md5sig fooling
+# - working NFQWS strategy for this ISP: fakedsplit + md5sig fooling
 
 echo "=== Installing zapret-git (AUR) ==="
 if ! pacman -Q zapret-git &>/dev/null && ! pacman -Q zapret &>/dev/null; then
     yay -S --needed --noconfirm zapret-git
 fi
 
-echo "=== Installing zapret config (Superonline Discord bypass) ==="
+echo "=== Installing zapret config (Discord bypass) ==="
 sudo install -d /opt/zapret
 sudo install -m 644 "$REPO_DIR/system/opt/zapret/config" /opt/zapret/config
 

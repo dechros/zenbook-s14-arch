@@ -20,7 +20,7 @@ if [[ "$CMDLINE" == *"resume=UUID=$SWAP_UUID"* ]]; then
     echo "resume= already set"
 else
     CMDLINE=$(echo "$CMDLINE" | sed -E 's/ ?resume=[^ ]*//g')
-    echo "$CMDLINE resume=UUID=$SWAP_UUID" | sudo tee /etc/kernel/cmdline
+    echo "$CMDLINE resume=UUID=$SWAP_UUID" | sudo tee /etc/kernel/cmdline >/dev/null
 fi
 
 if ! grep -q "^HOOKS=.*\bresume\b" /etc/mkinitcpio.conf; then

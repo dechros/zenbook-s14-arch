@@ -17,7 +17,7 @@ mkdir -p "$USER_HOME/.config" \
     "$USER_HOME/.local/bin" \
     "$USER_HOME/Pictures/Wallpapers"
 cp -r "$REPO_DIR/user/.config/"* "$USER_HOME/.config/"
-cp "$REPO_DIR/user/.local/share/icons/"* "$USER_HOME/.local/share/icons/"
+cp -r "$REPO_DIR/user/.local/share/icons/"* "$USER_HOME/.local/share/icons/"
 cp "$REPO_DIR/user/.local/share/konsole/"* "$USER_HOME/.local/share/konsole/"
 # No keyring: kwalletd and the kwallet Secret portal can never be D-Bus activated,
 # the portal exposes no Secret interface, Chrome/Electron use the basic store.

@@ -25,6 +25,9 @@ sudo udevadm trigger
 sudo systemctl disable --now reflector.timer 2>/dev/null || true
 sudo systemctl enable --now cachyos-rate-mirrors.timer || true
 
+# Firmware updates from LVFS (BIOS, SSD, webcam, UEFI dbx); check with: fwupdmgr get-updates
+sudo systemctl enable --now fwupd-refresh.timer || true
+
 # WiFi backend = iwd (config: NetworkManager/conf.d/wifi-backend.conf). With
 # wpa_supplicant the boot DHCP stalled ~14s; iwd has the link ready when DHCP
 # starts so the first request succeeds (~0.2s). Mask wpa_supplicant so it can't

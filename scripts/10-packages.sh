@@ -13,7 +13,9 @@ sudo pacman -S --needed --noconfirm git \
     terminus-font powertop iw sof-firmware alsa-ucm-conf \
     qt5-wayland qt6-wayland inotify-tools \
     vulkan-intel lib32-vulkan-intel vulkan-tools \
-    intel-media-driver \
+    intel-media-driver vpl-gpu-rt libva-utils intel-gpu-tools \
+    level-zero-loader intel-npu-driver \
+    fwupd asusctl \
     plasma-nm plasma-pa kscreen bluedevil kde-gtk-config breeze-gtk kwallet-pam \
     plasma-systemmonitor spectacle papirus-icon-theme \
     wireless-regdb \

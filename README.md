@@ -41,7 +41,7 @@ Post-install configuration for ASUS Zenbook S14 (UX5406SA) on CachyOS (Arch Linu
 
 ```
 install.sh              main entry, runs scripts/* in order
-scripts/                install phases (firmware, CachyOS, packages, system, hotkey, zapret, user, env, display, graphics, hibernate, optional Cabal Online)
+scripts/                install phases (firmware, CachyOS, packages, tools, system, hotkey, zapret, user, env, display, graphics, hibernate, optional Cabal Online)
 hotkey-handler/         source for the hotkey systemd service
 system/                 files copied to /
 user/                   files copied to $HOME

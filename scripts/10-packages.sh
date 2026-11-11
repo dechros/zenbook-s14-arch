@@ -13,7 +13,7 @@ sudo pacman -S --needed --noconfirm git \
     terminus-font powertop iw sof-firmware alsa-ucm-conf \
     qt5-wayland qt6-wayland inotify-tools \
     vulkan-intel lib32-vulkan-intel vulkan-tools \
-    intel-media-driver vpl-gpu-rt libva-utils intel-gpu-tools \
+    intel-media-driver intel-compute-runtime vpl-gpu-rt libva-utils intel-gpu-tools \
     level-zero-loader intel-npu-driver \
     fwupd asusctl \
     plasma-nm plasma-pa kscreen bluedevil kde-gtk-config breeze-gtk \
@@ -48,7 +48,7 @@ yay -S --needed --noconfirm \
     google-chrome \
     visual-studio-code-bin \
     bibata-cursor-theme-bin \
-    zsh-theme-powerlevel10k \
+    zsh-theme-powerlevel10k-git \
     plasma6-applets-window-title \
     plasma6-applets-separator-git \
     plasma6-applets-panel-spacer-extended \

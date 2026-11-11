@@ -31,7 +31,7 @@ sudo pacman -S --needed --noconfirm git \
     jq tree unzip zip 7zip rsync tmux fzf ripgrep fd bat eza wget \
     htop nano wl-clipboard \
     man-db man-pages xdg-utils \
-    pacman-contrib reflector smartmontools ufw \
+    pacman-contrib smartmontools ufw \
     kdeconnect \
     steam gamescope gamemode lib32-gamemode mangohud lib32-mangohud
 

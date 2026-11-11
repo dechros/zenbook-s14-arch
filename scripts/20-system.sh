@@ -18,8 +18,6 @@ echo "=== Enabling system services ==="
 sudo systemctl daemon-reload
 sudo udevadm control --reload-rules
 sudo udevadm trigger
-# cachyos-rate-mirrors owns all mirrorlists; reflector would fight it.
-sudo systemctl disable --now reflector.timer 2>/dev/null || true
 sudo systemctl enable --now cachyos-rate-mirrors.timer || true
 
 sudo systemctl enable --now fwupd-refresh.timer || true

@@ -1,26 +1,17 @@
 #!/bin/bash
 set -e
 
-# Lunar Lake (Intel Xe) hard-freeze mitigation.
-# Symptom: black screen + full system hard-freeze under GPU load (e.g. CS2),
-# no panic logged (system locks before it can write). Display log shows
-# "Selective fetch area calculation failed in pipe A" (PSR2 selective fetch).
-# Fix: disable Panel Self Refresh on the xe driver via kernel cmdline.
-# Reversible: remove the param and rebuild the UKI.
-#
-# Status (2026-11, kernel 7.3.3): the selective fetch message is a one-time
-# fallback notice, not a fault, and other Lunar Lake reports tie this freeze
-# class to framebuffers allocated in stolen memory, fixed upstream in 7.2/7.3.
-# PSR stays off until CS2 has been played on 7.3.x without a freeze; then
-# try xe.enable_psr=1 (PSR1 only) before removing the parameter.
-#
-# intel_idle.max_cstate=8 is removed if present: Lunar Lake exposes only
-# POLL/C1/C2/C3 through ACPI _CST, so the limit never cut anything.
+# Kernel cmdline cleanup for Lunar Lake (Intel Xe).
+# xe.enable_psr=0 was a workaround for a black-screen hard freeze under GPU
+# load (CS2). On kernel 7.3.x the freeze is fixed (framebuffers are no longer
+# allocated in stolen memory) and PSR is left at the driver default to save
+# power on the OLED panel. intel_idle.max_cstate=8 never limited anything on
+# Lunar Lake (ACPI _CST exposes only POLL/C1/C2/C3). Both are stripped from
+# existing installs.
 
-echo "=== Disabling PSR on Intel Xe (Lunar Lake freeze mitigation) ==="
+echo "=== Cleaning stale Lunar Lake kernel parameters ==="
 CMDLINE=$(cat /etc/kernel/cmdline)
-NEW=$(echo "$CMDLINE" | sed -E 's/ ?intel_idle\.max_cstate=[0-9]+//')
-[[ "$NEW" == *"xe.enable_psr=0"* ]] || NEW="$NEW xe.enable_psr=0"
+NEW=$(echo "$CMDLINE" | sed -E 's/ ?intel_idle\.max_cstate=[0-9]+//; s/ ?xe\.enable_psr=[0-9]+//')
 if [[ "$NEW" == "$CMDLINE" ]]; then
     echo "kernel cmdline already up to date"
 else

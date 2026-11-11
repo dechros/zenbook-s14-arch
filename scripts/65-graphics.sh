@@ -7,13 +7,24 @@ set -e
 # "Selective fetch area calculation failed in pipe A" (PSR2 selective fetch).
 # Fix: disable Panel Self Refresh on the xe driver via kernel cmdline.
 # Reversible: remove the param and rebuild the UKI.
+#
+# Status (2026-11, kernel 7.3.3): the selective fetch message is a one-time
+# fallback notice, not a fault, and other Lunar Lake reports tie this freeze
+# class to framebuffers allocated in stolen memory, fixed upstream in 7.2/7.3.
+# PSR stays off until CS2 has been played on 7.3.x without a freeze; then
+# try xe.enable_psr=1 (PSR1 only) before removing the parameter.
+#
+# intel_idle.max_cstate=8 is removed if present: Lunar Lake exposes only
+# POLL/C1/C2/C3 through ACPI _CST, so the limit never cut anything.
 
 echo "=== Disabling PSR on Intel Xe (Lunar Lake freeze mitigation) ==="
 CMDLINE=$(cat /etc/kernel/cmdline)
-if [[ "$CMDLINE" == *"xe.enable_psr=0"* ]]; then
-    echo "xe.enable_psr=0 already set"
+NEW=$(echo "$CMDLINE" | sed -E 's/ ?intel_idle\.max_cstate=[0-9]+//')
+[[ "$NEW" == *"xe.enable_psr=0"* ]] || NEW="$NEW xe.enable_psr=0"
+if [[ "$NEW" == "$CMDLINE" ]]; then
+    echo "kernel cmdline already up to date"
 else
-    echo "$CMDLINE xe.enable_psr=0" | sudo tee /etc/kernel/cmdline >/dev/null
+    echo "$NEW" | sudo tee /etc/kernel/cmdline >/dev/null
     sudo mkinitcpio -p linux-cachyos
 fi
 

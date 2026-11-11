@@ -2,10 +2,7 @@
 set -e
 REPO_DIR="${REPO_DIR:-$(cd "$(dirname "$0")/.." && pwd)}"
 
-# DPI bypass for a Turkish ISP that blocks Discord, etc.
-# - zapret-git from AUR (nfqws DPI desync)
-# - Cloudflare DNS to defeat ISP DNS hijacking
-# - working NFQWS strategy for this ISP: fakedsplit + md5sig fooling
+# zapret DPI bypass for an ISP that blocks Discord.
 
 echo "=== Installing zapret-git (AUR) ==="
 if ! pacman -Q zapret-git &>/dev/null && ! pacman -Q zapret &>/dev/null; then
@@ -21,10 +18,7 @@ sudo systemctl enable --now zapret
 sudo systemctl restart zapret
 
 echo "=== Setting Cloudflare DNS to defeat ISP DNS hijacking ==="
-# NOTE: the primary, permanent mechanism is the global NetworkManager DNS at
-# system/etc/NetworkManager/conf.d/dns-cloudflare.conf (deployed by 20-system.sh),
-# which forces Cloudflare DNS on EVERY network automatically. The per-connection
-# nmcli below is a belt-and-suspenders fallback for the currently-active Wi-Fi.
+# dns-cloudflare.conf covers every network; this only fixes the active one now.
 CONN="$(nmcli -t -f NAME,TYPE connection show --active 2>/dev/null \
     | grep -iE ':(802-11-wireless|wifi)$' | head -1 | cut -d: -f1)"
 if [[ -n "$CONN" ]]; then

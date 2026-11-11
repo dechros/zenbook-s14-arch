@@ -22,7 +22,5 @@ NFQWS_UDP_PKT_IN=0
 NFQWS_OPT="--dpi-desync=fakedsplit --dpi-desync-split-pos=1 --dpi-desync-fooling=md5sig --dpi-desync-ttl=8 --dpi-desync-fake-tls=0x00000000 --dpi-desync-repeats=10"
 
 MODE_FILTER=none
-# Required: makes zapret apply nftables firewall rules at every boot.
-# Without this only the nfqws daemon starts and no traffic is queued
-# (rules are lost on reboot, so Discord/etc. silently break after a reboot).
+# Without this the nftables rules are not reapplied on boot.
 INIT_APPLY_FW=1

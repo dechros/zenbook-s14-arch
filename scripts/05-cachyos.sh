@@ -15,9 +15,7 @@ if ! grep -q 'x86_64_v3' /etc/pacman.conf; then
     sudo sed -i 's/^Architecture = auto$/Architecture = auto x86_64_v3/' /etc/pacman.conf
 fi
 
-# cachyos-repo.sh above sets these up itself, but it only runs when the keyring
-# is missing. Without core-v3 and extra-v3 every core/extra package stays a
-# generic x86_64 build and only CachyOS's own packages get the v3 optimisations.
+# cachyos-repo.sh only adds core-v3/extra-v3 when the keyring is missing.
 echo "=== Adding the x86_64_v3 repositories ==="
 if grep -q '^\[cachyos\]' /etc/pacman.conf; then
     before='^\[cachyos\]'
@@ -37,8 +35,7 @@ sudo cachyos-rate-mirrors
 
 sudo pacman -Syu --noconfirm
 
-# A package whose version matches in both repos is not replaced by -Syu, so
-# reinstall everything that has a v3 build to move it off the generic one.
+# -Syu keeps same-version generic builds; reinstall to switch them to v3.
 echo "=== Moving installed packages to their x86_64_v3 builds ==="
 v3=$( (pacman -Slq cachyos-v3; pacman -Slq cachyos-core-v3; pacman -Slq cachyos-extra-v3) 2>/dev/null | sort -u)
 mapfile -t generic < <(comm -12 <(pacman -Qqn | sort) <(echo "$v3") \

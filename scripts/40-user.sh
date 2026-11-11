@@ -19,18 +19,12 @@ mkdir -p "$USER_HOME/.config" \
 cp -r "$REPO_DIR/user/.config/"* "$USER_HOME/.config/"
 cp -r "$REPO_DIR/user/.local/share/icons/"* "$USER_HOME/.local/share/icons/"
 cp "$REPO_DIR/user/.local/share/konsole/"* "$USER_HOME/.local/share/konsole/"
-# No keyring: kwalletd and the kwallet Secret portal can never be D-Bus activated,
-# the portal exposes no Secret interface, Chrome/Electron use the basic store.
+# Block kwalletd and the kwallet Secret portal from D-Bus activation.
 mkdir -p "$USER_HOME/.local/share/dbus-1/services"
 cp "$REPO_DIR/user/.local/share/dbus-1/services/"* "$USER_HOME/.local/share/dbus-1/services/"
-# .desktop overrides
 cp "$REPO_DIR/user/.local/share/applications/"* "$USER_HOME/.local/share/applications/"
 echo "=== Scroll speed: Konsole fast, other apps slower ==="
-# Pointer speed and scroll factors per device come from user/.config/kcminputrc.
-# The G305 scroll factor must stay >= 1: below 1 Konsole reports a wheel event
-# to TUI apps (Claude Code) only every second notch.
-# Qt/KDE apps: 1 line per notch. Konsole reads its own value from
-# ~/.config/konsole-scroll/kdeglobals via XDG_CONFIG_DIRS in its launchers.
+# Konsole reads its own kdeglobals from ~/.config/konsole-scroll via XDG_CONFIG_DIRS.
 kwriteconfig6 --file kdeglobals --group KDE --key WheelScrollLines 1
 sed -E "s#^Exec=konsole#Exec=env XDG_CONFIG_DIRS=$USER_HOME/.config/konsole-scroll:$USER_HOME/.config:/etc/xdg konsole#" \
     /usr/share/applications/org.kde.konsole.desktop > "$USER_HOME/.local/share/applications/org.kde.konsole.desktop"

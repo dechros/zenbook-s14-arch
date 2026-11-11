@@ -1,16 +1,7 @@
 #!/bin/bash
-# CABAL Online (EU) — PlayThisGame — Wine setup (Lunar Lake / KDE Wayland)
-#
-# Why this is special: the official EU client (cabaleu.playthisgame.com ->
-# 11132014_EU_Setup.exe) has a 2014 base; on first launch it self-updates to the
-# current launcher and switches to the new patch/info hosts (c1eu.cdn /
-# c1eu.info01 .playthisgame.com). BUT c1eu.info01.playthisgame.com has been
-# removed from DNS (NXDOMAIN) -> the launcher hangs there and shows "Update Fail".
-# Fix: map that dead host to 127.0.0.1 and run a tiny local proxy
-# (cabal-patch-proxy.service) that forwards the requests to the live CDN
-# (c1eu.cdn.playthisgame.com). The launcher then fetches the manifest and patches
-# fully. GameGuard passes under Wine; the character screen needs native d3dx9;
-# text rendering needs corefonts+tahoma.
+# CABAL Online (EU) under Wine. The launcher's info host
+# c1eu.info01.playthisgame.com no longer resolves, so it is mapped to 127.0.0.1
+# where cabal-patch-proxy.service forwards to the live CDN.
 set -e
 REPO_DIR="${REPO_DIR:-$(cd "$(dirname "$0")/.." && pwd)}"
 PREFIX="$HOME/Games/cabal-online"
@@ -22,7 +13,6 @@ sudo pacman -S --needed --noconfirm wine winetricks wine-mono wine-gecko \
     lib32-mpg123 lib32-giflib lib32-libjpeg-turbo lib32-openal lib32-libxcomposite
 
 echo "=== 2. Redirect the dead info host -> local patch proxy ==="
-# /etc/hosts entry (persistent) + proxy service (auto on boot, :80 -> live CDN)
 grep -q 'c1eu.info01.playthisgame.com' /etc/hosts || \
     echo '127.0.0.1 c1eu.info01.playthisgame.com' | sudo tee -a /etc/hosts >/dev/null
 sudo systemctl enable --now cabal-patch-proxy.service

@@ -18,33 +18,20 @@ echo "=== Enabling system services ==="
 sudo systemctl daemon-reload
 sudo udevadm control --reload-rules
 sudo udevadm trigger
-# Mirror maintenance, the way CachyOS does it: cachyos-rate-mirrors ranks the
-# Arch, CachyOS and v3 mirrorlists on its own timer and is the only owner of
-# them. reflector writes the same /etc/pacman.d/mirrorlist, so CachyOS's pacman
-# hook disables its timer on install; enabling it again makes the two fight.
+# cachyos-rate-mirrors owns all mirrorlists; reflector would fight it.
 sudo systemctl disable --now reflector.timer 2>/dev/null || true
 sudo systemctl enable --now cachyos-rate-mirrors.timer || true
 
-# Firmware updates from LVFS (BIOS, SSD, webcam, UEFI dbx); check with: fwupdmgr get-updates
 sudo systemctl enable --now fwupd-refresh.timer || true
 
-# WiFi backend = iwd (config: NetworkManager/conf.d/wifi-backend.conf). With
-# wpa_supplicant the boot DHCP stalled ~14s; iwd has the link ready when DHCP
-# starts so the first request succeeds (~0.2s). Mask wpa_supplicant so it can't
-# race iwd for the device.
+# iwd is the Wi-Fi backend; masked wpa_supplicant cannot race it for the device.
 sudo systemctl enable iwd.service || true
 sudo systemctl mask wpa_supplicant.service || true
 
-# The disk is not encrypted, so none of systemd's measured-boot NvPCR work has a
-# consumer here. On this TPM it also cannot succeed: the NV space is full, and
-# every unit that defines or extends an NvPCR fails on every boot. Mask those.
-# systemd-tpm2-setup still runs and completes; it only touches the SRK.
+# NvPCR units fail every boot (TPM NV space is full) and nothing uses them.
 sudo systemctl mask systemd-pcrlogin@.service || true
 sudo systemctl mask systemd-pcrproduct.service || true
 sudo systemctl mask systemd-tpm2-setup-early.service || true
 
-# freeze-capture: CS:GO hard-freeze diagnosis (suspected drm/xe #7513). On boot,
-# if the previous boot did not shut down cleanly, it saves that boot's xe/drm logs
-# under /var/log/freeze-capture. (Together with journald.conf.d/fast-sync +
-# sysctl.d/99-freeze-debug.)
+# Saves the previous boot's logs to /var/log/freeze-capture after an unclean shutdown.
 sudo systemctl enable freeze-capture.service || true

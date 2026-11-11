@@ -1,7 +1,14 @@
 {
     "github.copilot.chat.codeGeneration.useInstructionFiles": true,
     "git.confirmSync": false,
+    "claudeCode.initialPermissionMode": "bypassPermissions",
+    "claudeCode.preferredLocation": "panel",
+    "claudeCode.respectGitIgnore": false,
     "workbench.colorTheme": "Dark+",
+    "claudeCode.selectedModel": "opus",
+    "claudeCode.allowDangerouslySkipPermissions": true,
+    "github.copilot.chat.claudeAgent.allowDangerouslySkipPermissions": true,
+    "claudeCode.hideOnboarding": true,
     "[markdown]": {
         "editor.defaultFormatter": "yzhang.markdown-all-in-one"
     },
@@ -19,5 +26,11 @@
     "terminal.integrated.fontSize": 13,
     "explorer.confirmDragAndDrop": false,
     "window.confirmSaveUntitledWorkspace": false,
-    "qt-qml.doNotAskForQmllsDownload": true
+    "security.allowedUNCHosts": [
+        "kurumsal"
+    ],
+    "workbench.startupEditor": "none",
+    "qt-qml.doNotAskForQmllsDownload": true,
+    "security.workspace.trust.untrustedFiles": "newWindow",
+    "update.mode": "none"
 }
